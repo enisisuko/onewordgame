@@ -1,0 +1,6 @@
+﻿---
+description: Sync labeled-gaussian-game-generator skill changes to GitHub
+alwaysApply: true
+---
+
+When modifying `.cursor/skills/labeled-gaussian-game-generator/` or the labeled-gaussian-game-generator skill in this repo, always commit and push changes to https://github.com/enisisuko/onewordgame.git after completing the modification, unless the user explicitly says not to push.
