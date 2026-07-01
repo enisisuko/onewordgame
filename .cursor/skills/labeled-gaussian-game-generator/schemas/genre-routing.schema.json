@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "genre-routing.schema.json",
+  "type": "object",
+  "required": [
+    "primaryArchetype",
+    "confidence",
+    "reasons"
+  ],
+  "properties": {
+    "primaryArchetype": {
+      "type": "string"
+    },
+    "secondaryArchetypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 2
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

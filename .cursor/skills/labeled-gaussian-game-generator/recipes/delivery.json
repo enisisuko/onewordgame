@@ -1,0 +1,30 @@
+{
+  "id": "delivery",
+  "requiredSceneEvidence": [
+    "pickup sources",
+    "delivery target container or region"
+  ],
+  "optionalSceneEvidence": [
+    "tables",
+    "counters"
+  ],
+  "requiredMechanics": [
+    "pickup",
+    "carry_or_transport",
+    "delivery_detection",
+    "completion_condition"
+  ],
+  "recommendedCameraModes": [
+    "limited_first_person",
+    "top_down"
+  ],
+  "mandatoryTests": [
+    "items can be picked up",
+    "delivery target exists",
+    "wrong placement does not win"
+  ],
+  "fallbackArchetypes": [
+    "proximity_delivery",
+    "click_delivery"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "quality-score.schema.json",
+  "type": "object",
+  "required": [
+    "overall",
+    "dimensions",
+    "blockingIssues"
+  ],
+  "properties": {
+    "overall": {
+      "type": "number"
+    },
+    "dimensions": {
+      "type": "object"
+    },
+    "blockingIssues": {
+      "type": "array"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

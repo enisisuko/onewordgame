@@ -1,0 +1,27 @@
+{
+  "id": "management",
+  "requiredSceneEvidence": [
+    "at least one reachable region"
+  ],
+  "optionalSceneEvidence": [
+    "interactive objects"
+  ],
+  "requiredMechanics": [
+    "core_loop",
+    "feedback",
+    "completion_condition"
+  ],
+  "recommendedCameraModes": [
+    "fixed_view",
+    "limited_first_person"
+  ],
+  "mandatoryTests": [
+    "win condition reachable",
+    "lose or end condition works",
+    "restart works"
+  ],
+  "fallbackArchetypes": [
+    "screen_space",
+    "fixed_view"
+  ]
+}

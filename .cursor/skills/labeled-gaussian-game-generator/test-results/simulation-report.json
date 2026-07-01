@@ -1,0 +1,1126 @@
+{
+  "simulations": [
+    {
+      "caseId": "kitchen_collect",
+      "request": "使用这张厨房图片，做一个一分钟内找到五种食材并放进锅里的游戏。",
+      "gameIntent": {
+        "rawRequest": "使用这张厨房图片，做一个一分钟内找到五种食材并放进锅里的游戏。",
+        "explicitIntent": {
+          "verbs": [
+            "找到",
+            "放进"
+          ],
+          "requestedEntities": [
+            "食材",
+            "锅"
+          ],
+          "requestedGoals": [
+            "收集并完成任务目标"
+          ],
+          "requestedGenreHints": []
+        },
+        "inferredIntent": {
+          "perspective": "first_person",
+          "sessionLengthSeconds": 60,
+          "playerCount": 1,
+          "difficulty": "normal",
+          "tone": "neutral",
+          "targetPlatform": "desktop_web"
+        },
+        "assumptions": [
+          "用户未指定视角时默认 limited first-person 或 fixed view",
+          "用户未指定时长时默认 60 秒体验"
+        ],
+        "ambiguities": [],
+        "hardRequirements": [
+          "必须能完成收集数量"
+        ],
+        "softPreferences": [
+          "优先绑定真实语义标签"
+        ]
+      },
+      "genreRouting": {
+        "primaryArchetype": "collection",
+        "secondaryArchetypes": [
+          "delivery",
+          "horror"
+        ],
+        "confidence": 0.85,
+        "reasons": [
+          "matched keywords for collection",
+          "matched keywords for delivery"
+        ]
+      },
+      "selectedMechanics": [
+        "pickup",
+        "delivery",
+        "free_movement"
+      ],
+      "mechanicScores": [
+        {
+          "mechanic": "pickup",
+          "score": 0.93,
+          "components": {
+            "semanticEvidence": 0.98,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.93,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        },
+        {
+          "mechanic": "delivery",
+          "score": 0.93,
+          "components": {
+            "semanticEvidence": 0.98,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.93,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        },
+        {
+          "mechanic": "free_movement",
+          "score": 0.81,
+          "components": {
+            "semanticEvidence": 0.86,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.81,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        }
+      ],
+      "semanticLabelsUsed": [
+        {
+          "id": "floor_01",
+          "type": "floor",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "counter_01",
+          "type": "counter",
+          "roles": []
+        },
+        {
+          "id": "pot_01",
+          "type": "pot",
+          "roles": [
+            "delivery_target"
+          ]
+        },
+        {
+          "id": "tomato_01",
+          "type": "vegetable",
+          "roles": [
+            "collectible"
+          ]
+        },
+        {
+          "id": "carrot_01",
+          "type": "vegetable",
+          "roles": [
+            "collectible"
+          ]
+        },
+        {
+          "id": "onion_01",
+          "type": "vegetable",
+          "roles": [
+            "collectible"
+          ]
+        },
+        {
+          "id": "pepper_01",
+          "type": "vegetable",
+          "roles": [
+            "collectible"
+          ]
+        },
+        {
+          "id": "salt_01",
+          "type": "ingredient",
+          "roles": [
+            "collectible"
+          ]
+        }
+      ],
+      "rejectedMechanics": [],
+      "rejectedLabels": [],
+      "fallbacks": [],
+      "mechanicBindings": [
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "floor_01",
+          "semanticLabel": "floor",
+          "gameRole": "walk_surface",
+          "confidence": 0.99
+        },
+        {
+          "mechanicId": "delivery_target",
+          "objectId": "pot_01",
+          "semanticLabel": "pot",
+          "gameRole": "delivery_target",
+          "confidence": 0.88
+        },
+        {
+          "mechanicId": "collectible",
+          "objectId": "tomato_01",
+          "semanticLabel": "vegetable",
+          "gameRole": "collectible",
+          "confidence": 0.91
+        },
+        {
+          "mechanicId": "collectible",
+          "objectId": "carrot_01",
+          "semanticLabel": "vegetable",
+          "gameRole": "collectible",
+          "confidence": 0.89
+        },
+        {
+          "mechanicId": "collectible",
+          "objectId": "onion_01",
+          "semanticLabel": "vegetable",
+          "gameRole": "collectible",
+          "confidence": 0.87
+        },
+        {
+          "mechanicId": "collectible",
+          "objectId": "pepper_01",
+          "semanticLabel": "vegetable",
+          "gameRole": "collectible",
+          "confidence": 0.86
+        },
+        {
+          "mechanicId": "collectible",
+          "objectId": "salt_01",
+          "semanticLabel": "ingredient",
+          "gameRole": "collectible",
+          "confidence": 0.84
+        }
+      ],
+      "mechanicGraph": {
+        "nodes": [
+          {
+            "id": "explore",
+            "type": "player_action",
+            "verb": "move"
+          },
+          {
+            "id": "pickup_items",
+            "type": "objective",
+            "verb": "collect"
+          },
+          {
+            "id": "deliver_items",
+            "type": "objective",
+            "verb": "deliver"
+          },
+          {
+            "id": "win",
+            "type": "win_condition",
+            "verb": "complete"
+          }
+        ],
+        "edges": [
+          {
+            "from": "explore",
+            "to": "pickup_items",
+            "relation": "enables"
+          },
+          {
+            "from": "pickup_items",
+            "to": "deliver_items",
+            "relation": "required_before"
+          },
+          {
+            "from": "deliver_items",
+            "to": "win",
+            "relation": "enables"
+          }
+        ]
+      },
+      "conflicts": [],
+      "solvability": {
+        "solvable": true,
+        "path": [
+          "player spawns on walkable surface",
+          "pickup tomato_01",
+          "pickup carrot_01",
+          "pickup onion_01",
+          "pickup pepper_01",
+          "pickup salt_01",
+          "deliver to pot_01"
+        ],
+        "verifiedConditions": [
+          "delivery target reachable"
+        ]
+      },
+      "qualityScore": {
+        "overall": 0.92,
+        "dimensions": {
+          "requestAlignment": 0.85,
+          "sceneGrounding": 0.93,
+          "playability": 0.9,
+          "solvability": 1.0,
+          "feedbackClarity": 0.82,
+          "restartReliability": 0.95,
+          "performance": 0.78,
+          "semanticReliability": 0.93
+        },
+        "blockingIssues": [],
+        "warnings": [
+          "scene edges may use invisible bounds"
+        ]
+      }
+    },
+    {
+      "caseId": "factory_escape",
+      "request": "用这个废弃工厂做一个躲避怪物并打开出口大门的恐怖游戏。",
+      "gameIntent": {
+        "rawRequest": "用这个废弃工厂做一个躲避怪物并打开出口大门的恐怖游戏。",
+        "explicitIntent": {
+          "verbs": [
+            "躲避"
+          ],
+          "requestedEntities": [
+            "怪物",
+            "出口"
+          ],
+          "requestedGoals": [],
+          "requestedGenreHints": [
+            "horror",
+            "stealth",
+            "escape"
+          ]
+        },
+        "inferredIntent": {
+          "perspective": "first_person",
+          "sessionLengthSeconds": 180,
+          "playerCount": 1,
+          "difficulty": "normal",
+          "tone": "tense",
+          "targetPlatform": "desktop_web"
+        },
+        "assumptions": [
+          "用户未指定视角时默认 limited first-person 或 fixed view",
+          "用户未指定时长时默认 180 秒体验"
+        ],
+        "ambiguities": [],
+        "hardRequirements": [
+          "必须存在威胁或压力",
+          "必须可以完成目标并结束"
+        ],
+        "softPreferences": [
+          "优先绑定真实语义标签"
+        ]
+      },
+      "genreRouting": {
+        "primaryArchetype": "escape",
+        "secondaryArchetypes": [
+          "delivery",
+          "collection"
+        ],
+        "confidence": 0.99,
+        "reasons": [
+          "matched keywords for escape",
+          "matched keywords for escape"
+        ]
+      },
+      "selectedMechanics": [
+        "free_movement",
+        "unlock_exit"
+      ],
+      "mechanicScores": [
+        {
+          "mechanic": "free_movement",
+          "score": 0.81,
+          "components": {
+            "semanticEvidence": 0.86,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.81,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        },
+        {
+          "mechanic": "unlock_exit",
+          "score": 0.9,
+          "components": {
+            "semanticEvidence": 0.95,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.9,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        }
+      ],
+      "semanticLabelsUsed": [
+        {
+          "id": "floor_01",
+          "type": "floor",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "door_01",
+          "type": "door",
+          "roles": [
+            "exit"
+          ]
+        },
+        {
+          "id": "crate_01",
+          "type": "crate",
+          "roles": []
+        },
+        {
+          "id": "machine_01",
+          "type": "machine",
+          "roles": []
+        },
+        {
+          "id": "table_02",
+          "type": "table",
+          "roles": []
+        }
+      ],
+      "rejectedMechanics": [],
+      "rejectedLabels": [],
+      "fallbacks": [],
+      "mechanicBindings": [
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "floor_01",
+          "semanticLabel": "floor",
+          "gameRole": "walk_surface",
+          "confidence": 0.98
+        },
+        {
+          "mechanicId": "exit",
+          "objectId": "door_01",
+          "semanticLabel": "door",
+          "gameRole": "exit",
+          "confidence": 0.96
+        }
+      ],
+      "mechanicGraph": {
+        "nodes": [
+          {
+            "id": "explore",
+            "type": "player_action",
+            "verb": "move"
+          },
+          {
+            "id": "avoid_threat",
+            "type": "threat",
+            "verb": "avoid"
+          },
+          {
+            "id": "find_key",
+            "type": "objective",
+            "verb": "collect"
+          },
+          {
+            "id": "unlock_exit",
+            "type": "objective",
+            "verb": "unlock"
+          },
+          {
+            "id": "escape",
+            "type": "win_condition",
+            "verb": "reach"
+          }
+        ],
+        "edges": [
+          {
+            "from": "explore",
+            "to": "find_key",
+            "relation": "enables"
+          },
+          {
+            "from": "find_key",
+            "to": "unlock_exit",
+            "relation": "required_before"
+          },
+          {
+            "from": "unlock_exit",
+            "to": "escape",
+            "relation": "enables"
+          },
+          {
+            "from": "avoid_threat",
+            "to": "escape",
+            "relation": "opposes"
+          }
+        ]
+      },
+      "conflicts": [],
+      "solvability": {
+        "solvable": true,
+        "path": [
+          "player spawns on walkable surface",
+          "avoid waypoint monster",
+          "pickup synthetic key near table",
+          "unlock door_01",
+          "reach exit trigger"
+        ],
+        "verifiedConditions": [
+          "exit exists",
+          "key substituted",
+          "unlock chain solvable"
+        ]
+      },
+      "qualityScore": {
+        "overall": 0.85,
+        "dimensions": {
+          "requestAlignment": 0.99,
+          "sceneGrounding": 0.5,
+          "playability": 0.9,
+          "solvability": 1.0,
+          "feedbackClarity": 0.82,
+          "restartReliability": 0.95,
+          "performance": 0.78,
+          "semanticReliability": 0.5
+        },
+        "blockingIssues": [],
+        "warnings": [
+          "scene edges may use invisible bounds"
+        ]
+      }
+    },
+    {
+      "caseId": "beach_fishing",
+      "request": "用这张海边图片做一个钓鱼比赛，鱼越稀有分数越高。",
+      "gameIntent": {
+        "rawRequest": "用这张海边图片做一个钓鱼比赛，鱼越稀有分数越高。",
+        "explicitIntent": {
+          "verbs": [
+            "钓鱼"
+          ],
+          "requestedEntities": [
+            "鱼"
+          ],
+          "requestedGoals": [
+            "完成钓鱼并获得分数"
+          ],
+          "requestedGenreHints": []
+        },
+        "inferredIntent": {
+          "perspective": "first_person",
+          "sessionLengthSeconds": 180,
+          "playerCount": 1,
+          "difficulty": "normal",
+          "tone": "neutral",
+          "targetPlatform": "desktop_web"
+        },
+        "assumptions": [
+          "用户未指定视角时默认 limited first-person 或 fixed view",
+          "用户未指定时长时默认 180 秒体验"
+        ],
+        "ambiguities": [],
+        "hardRequirements": [
+          "必须存在水域相关玩法"
+        ],
+        "softPreferences": [
+          "优先绑定真实语义标签"
+        ]
+      },
+      "genreRouting": {
+        "primaryArchetype": "fishing",
+        "secondaryArchetypes": [
+          "delivery",
+          "collection"
+        ],
+        "confidence": 0.7,
+        "reasons": [
+          "matched keywords for fishing"
+        ]
+      },
+      "selectedMechanics": [
+        "fishing"
+      ],
+      "mechanicScores": [
+        {
+          "mechanic": "fishing",
+          "score": 0.92,
+          "components": {
+            "semanticEvidence": 0.97,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.92,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        }
+      ],
+      "semanticLabelsUsed": [
+        {
+          "id": "shore_01",
+          "type": "platform",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "water_01",
+          "type": "water",
+          "roles": [
+            "fishing_zone"
+          ]
+        },
+        {
+          "id": "pier_01",
+          "type": "platform",
+          "roles": [
+            "walk_surface"
+          ]
+        }
+      ],
+      "rejectedMechanics": [],
+      "rejectedLabels": [],
+      "fallbacks": [],
+      "mechanicBindings": [
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "shore_01",
+          "semanticLabel": "platform",
+          "gameRole": "walk_surface",
+          "confidence": 0.94
+        },
+        {
+          "mechanicId": "fishing_zone",
+          "objectId": "water_01",
+          "semanticLabel": "water",
+          "gameRole": "fishing_zone",
+          "confidence": 0.97
+        },
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "pier_01",
+          "semanticLabel": "platform",
+          "gameRole": "walk_surface",
+          "confidence": 0.86
+        }
+      ],
+      "mechanicGraph": {
+        "nodes": [
+          {
+            "id": "cast",
+            "type": "player_action",
+            "verb": "fish"
+          },
+          {
+            "id": "hook_timing",
+            "type": "skill_check",
+            "verb": "time_input"
+          },
+          {
+            "id": "score_fish",
+            "type": "objective",
+            "verb": "achieve_score"
+          },
+          {
+            "id": "win",
+            "type": "win_condition",
+            "verb": "complete_before_time"
+          }
+        ],
+        "edges": [
+          {
+            "from": "cast",
+            "to": "hook_timing",
+            "relation": "enables"
+          },
+          {
+            "from": "hook_timing",
+            "to": "score_fish",
+            "relation": "enables"
+          },
+          {
+            "from": "score_fish",
+            "to": "win",
+            "relation": "required_before"
+          }
+        ]
+      },
+      "conflicts": [],
+      "solvability": {
+        "solvable": true,
+        "path": [
+          "player spawns on walkable surface",
+          "move to shore",
+          "cast into water_01",
+          "hook timing success",
+          "score by rarity"
+        ],
+        "verifiedConditions": [
+          "water anchor valid"
+        ]
+      },
+      "qualityScore": {
+        "overall": 0.78,
+        "dimensions": {
+          "requestAlignment": 0.7,
+          "sceneGrounding": 0.5,
+          "playability": 0.9,
+          "solvability": 1.0,
+          "feedbackClarity": 0.82,
+          "restartReliability": 0.95,
+          "performance": 0.78,
+          "semanticReliability": 0.5
+        },
+        "blockingIssues": [],
+        "warnings": [
+          "scene edges may use invisible bounds"
+        ]
+      }
+    },
+    {
+      "caseId": "room_puzzle",
+      "request": "在这个房间里找线索解谜并打开隐藏出口。",
+      "gameIntent": {
+        "rawRequest": "在这个房间里找线索解谜并打开隐藏出口。",
+        "explicitIntent": {
+          "verbs": [
+            "解谜"
+          ],
+          "requestedEntities": [
+            "出口",
+            "线索"
+          ],
+          "requestedGoals": [
+            "找到线索并完成推理"
+          ],
+          "requestedGenreHints": []
+        },
+        "inferredIntent": {
+          "perspective": "first_person",
+          "sessionLengthSeconds": 180,
+          "playerCount": 1,
+          "difficulty": "normal",
+          "tone": "neutral",
+          "targetPlatform": "desktop_web"
+        },
+        "assumptions": [
+          "用户未指定视角时默认 limited first-person 或 fixed view",
+          "用户未指定时长时默认 180 秒体验"
+        ],
+        "ambiguities": [],
+        "hardRequirements": [
+          "必须存在可完成证据链"
+        ],
+        "softPreferences": [
+          "优先绑定真实语义标签"
+        ]
+      },
+      "genreRouting": {
+        "primaryArchetype": "detective",
+        "secondaryArchetypes": [
+          "delivery",
+          "collection"
+        ],
+        "confidence": 0.99,
+        "reasons": [
+          "matched keywords for escape",
+          "matched keywords for detective"
+        ]
+      },
+      "selectedMechanics": [
+        "inspect",
+        "puzzle"
+      ],
+      "mechanicScores": [
+        {
+          "mechanic": "inspect",
+          "score": 0.81,
+          "components": {
+            "semanticEvidence": 0.86,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.81,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        },
+        {
+          "mechanic": "puzzle",
+          "score": 0.81,
+          "components": {
+            "semanticEvidence": 0.86,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.81,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        }
+      ],
+      "semanticLabelsUsed": [
+        {
+          "id": "floor_01",
+          "type": "floor",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "desk_01",
+          "type": "desk",
+          "roles": [
+            "clue_source"
+          ]
+        },
+        {
+          "id": "painting_01",
+          "type": "painting",
+          "roles": [
+            "clue_source"
+          ]
+        },
+        {
+          "id": "drawer_01",
+          "type": "drawer",
+          "roles": [
+            "delivery_target",
+            "clue_source"
+          ]
+        },
+        {
+          "id": "terminal_01",
+          "type": "terminal",
+          "roles": [
+            "clue_source"
+          ]
+        }
+      ],
+      "rejectedMechanics": [],
+      "rejectedLabels": [],
+      "fallbacks": [],
+      "mechanicBindings": [
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "floor_01",
+          "semanticLabel": "floor",
+          "gameRole": "walk_surface",
+          "confidence": 0.99
+        },
+        {
+          "mechanicId": "clue_source",
+          "objectId": "desk_01",
+          "semanticLabel": "desk",
+          "gameRole": "clue_source",
+          "confidence": 0.92
+        },
+        {
+          "mechanicId": "clue_source",
+          "objectId": "painting_01",
+          "semanticLabel": "painting",
+          "gameRole": "clue_source",
+          "confidence": 0.88
+        },
+        {
+          "mechanicId": "delivery_target",
+          "objectId": "drawer_01",
+          "semanticLabel": "drawer",
+          "gameRole": "delivery_target",
+          "confidence": 0.87
+        },
+        {
+          "mechanicId": "clue_source",
+          "objectId": "terminal_01",
+          "semanticLabel": "terminal",
+          "gameRole": "clue_source",
+          "confidence": 0.9
+        }
+      ],
+      "mechanicGraph": {
+        "nodes": [
+          {
+            "id": "inspect",
+            "type": "player_action",
+            "verb": "inspect"
+          },
+          {
+            "id": "collect_clues",
+            "type": "objective",
+            "verb": "discover"
+          },
+          {
+            "id": "solve",
+            "type": "objective",
+            "verb": "solve"
+          },
+          {
+            "id": "win",
+            "type": "win_condition",
+            "verb": "complete"
+          }
+        ],
+        "edges": [
+          {
+            "from": "inspect",
+            "to": "collect_clues",
+            "relation": "enables"
+          },
+          {
+            "from": "collect_clues",
+            "to": "solve",
+            "relation": "required_before"
+          },
+          {
+            "from": "solve",
+            "to": "win",
+            "relation": "enables"
+          }
+        ]
+      },
+      "conflicts": [],
+      "solvability": {
+        "solvable": true,
+        "path": [
+          "player spawns on walkable surface",
+          "inspect desk_01",
+          "inspect painting_01",
+          "inspect drawer_01",
+          "enter code at terminal",
+          "open hidden exit"
+        ],
+        "verifiedConditions": [
+          "three clue sources"
+        ]
+      },
+      "qualityScore": {
+        "overall": 0.85,
+        "dimensions": {
+          "requestAlignment": 0.99,
+          "sceneGrounding": 0.5,
+          "playability": 0.9,
+          "solvability": 1.0,
+          "feedbackClarity": 0.82,
+          "restartReliability": 0.95,
+          "performance": 0.78,
+          "semanticReliability": 0.5
+        },
+        "blockingIssues": [],
+        "warnings": [
+          "scene edges may use invisible bounds"
+        ]
+      }
+    },
+    {
+      "caseId": "road_race",
+      "request": "在道路场景中进行限时竞速，到达终点即胜利。",
+      "gameIntent": {
+        "rawRequest": "在道路场景中进行限时竞速，到达终点即胜利。",
+        "explicitIntent": {
+          "verbs": [
+            "竞速"
+          ],
+          "requestedEntities": [
+            "道路"
+          ],
+          "requestedGoals": [
+            "在时限内完成路径"
+          ],
+          "requestedGenreHints": []
+        },
+        "inferredIntent": {
+          "perspective": "first_person",
+          "sessionLengthSeconds": 120,
+          "playerCount": 1,
+          "difficulty": "normal",
+          "tone": "neutral",
+          "targetPlatform": "desktop_web"
+        },
+        "assumptions": [
+          "用户未指定视角时默认 limited first-person 或 fixed view",
+          "用户未指定时长时默认 120 秒体验"
+        ],
+        "ambiguities": [],
+        "hardRequirements": [
+          "必须存在可 traversable 路径或降级赛道"
+        ],
+        "softPreferences": [
+          "优先绑定真实语义标签"
+        ]
+      },
+      "genreRouting": {
+        "primaryArchetype": "racing-path",
+        "secondaryArchetypes": [
+          "delivery",
+          "collection"
+        ],
+        "confidence": 0.85,
+        "reasons": [
+          "matched keywords for racing-path"
+        ]
+      },
+      "selectedMechanics": [
+        "timed_race",
+        "free_movement"
+      ],
+      "mechanicScores": [
+        {
+          "mechanic": "timed_race",
+          "score": 0.78,
+          "components": {
+            "semanticEvidence": 0.83,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.78,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        },
+        {
+          "mechanic": "free_movement",
+          "score": 0.81,
+          "components": {
+            "semanticEvidence": 0.86,
+            "collisionReliability": 0.75,
+            "navigationReliability": 0.81,
+            "cameraSuitability": 0.76,
+            "performanceCost": 0.8
+          },
+          "risks": [],
+          "mitigations": []
+        }
+      ],
+      "semanticLabelsUsed": [
+        {
+          "id": "road_01",
+          "type": "road",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "start_01",
+          "type": "platform",
+          "roles": [
+            "walk_surface"
+          ]
+        },
+        {
+          "id": "finish_01",
+          "type": "gate",
+          "roles": [
+            "exit"
+          ]
+        },
+        {
+          "id": "barrier_01",
+          "type": "barrier",
+          "roles": []
+        }
+      ],
+      "rejectedMechanics": [],
+      "rejectedLabels": [],
+      "fallbacks": [],
+      "mechanicBindings": [
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "road_01",
+          "semanticLabel": "road",
+          "gameRole": "walk_surface",
+          "confidence": 0.95
+        },
+        {
+          "mechanicId": "walk_surface",
+          "objectId": "start_01",
+          "semanticLabel": "platform",
+          "gameRole": "walk_surface",
+          "confidence": 0.9
+        },
+        {
+          "mechanicId": "exit",
+          "objectId": "finish_01",
+          "semanticLabel": "gate",
+          "gameRole": "exit",
+          "confidence": 0.91
+        }
+      ],
+      "mechanicGraph": {
+        "nodes": [
+          {
+            "id": "drive",
+            "type": "player_action",
+            "verb": "move"
+          },
+          {
+            "id": "avoid_obstacles",
+            "type": "skill_check",
+            "verb": "avoid"
+          },
+          {
+            "id": "reach_finish",
+            "type": "win_condition",
+            "verb": "reach"
+          }
+        ],
+        "edges": [
+          {
+            "from": "drive",
+            "to": "avoid_obstacles",
+            "relation": "parallel"
+          },
+          {
+            "from": "avoid_obstacles",
+            "to": "reach_finish",
+            "relation": "enables"
+          }
+        ]
+      },
+      "conflicts": [],
+      "solvability": {
+        "solvable": true,
+        "path": [
+          "player spawns on walkable surface",
+          "start at start_01",
+          "follow road_01",
+          "avoid barrier_01",
+          "cross finish_01"
+        ],
+        "verifiedConditions": [
+          "finish reachable"
+        ]
+      },
+      "qualityScore": {
+        "overall": 0.81,
+        "dimensions": {
+          "requestAlignment": 0.85,
+          "sceneGrounding": 0.5,
+          "playability": 0.9,
+          "solvability": 1.0,
+          "feedbackClarity": 0.82,
+          "restartReliability": 0.95,
+          "performance": 0.78,
+          "semanticReliability": 0.5
+        },
+        "blockingIssues": [],
+        "warnings": [
+          "scene edges may use invisible bounds"
+        ]
+      }
+    }
+  ],
+  "allPassed": true
+}

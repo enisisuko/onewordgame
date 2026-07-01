@@ -1,0 +1,30 @@
+{
+  "id": "escape",
+  "requiredSceneEvidence": [
+    "exit or door",
+    "player spawn"
+  ],
+  "optionalSceneEvidence": [
+    "keys",
+    "locks",
+    "hazards"
+  ],
+  "requiredMechanics": [
+    "movement",
+    "objective_chain",
+    "exit_trigger"
+  ],
+  "recommendedCameraModes": [
+    "limited_first_person",
+    "rail_camera"
+  ],
+  "mandatoryTests": [
+    "exit exists",
+    "unlock chain solvable",
+    "exit triggers win"
+  ],
+  "fallbackArchetypes": [
+    "timed_escape",
+    "screen_space_escape"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "racing-path",
+  "requiredSceneEvidence": [
+    "continuous path or road",
+    "start and finish anchors"
+  ],
+  "optionalSceneEvidence": [
+    "barriers",
+    "checkpoints"
+  ],
+  "requiredMechanics": [
+    "movement_along_path",
+    "timer_or_score",
+    "finish_detection"
+  ],
+  "recommendedCameraModes": [
+    "rail_camera",
+    "third_person_limited"
+  ],
+  "mandatoryTests": [
+    "path is traversable",
+    "finish reachable before timeout",
+    "restart resets timer"
+  ],
+  "fallbackArchetypes": [
+    "fixed_path_race",
+    "auto_forward_dodge"
+  ]
+}

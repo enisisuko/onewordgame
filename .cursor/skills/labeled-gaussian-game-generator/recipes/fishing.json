@@ -1,0 +1,31 @@
+{
+  "id": "fishing",
+  "requiredSceneEvidence": [
+    "water surface label",
+    "shore or platform anchor"
+  ],
+  "optionalSceneEvidence": [
+    "boat",
+    "pier"
+  ],
+  "requiredMechanics": [
+    "cast",
+    "bite_event",
+    "timing_input",
+    "score_or_reward"
+  ],
+  "recommendedCameraModes": [
+    "fixed_view",
+    "limited_first_person"
+  ],
+  "mandatoryTests": [
+    "cast area on water",
+    "bite can trigger",
+    "reward settles",
+    "round can repeat"
+  ],
+  "fallbackArchetypes": [
+    "screen_space_fishing",
+    "throw_target_water"
+  ]
+}

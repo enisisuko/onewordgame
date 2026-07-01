@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "state-machine.schema.json",
+  "type": "object",
+  "required": [
+    "initialState",
+    "states"
+  ],
+  "properties": {
+    "initialState": {
+      "type": "string"
+    },
+    "states": {
+      "type": "object"
+    }
+  }
+}

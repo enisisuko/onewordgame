@@ -1,0 +1,30 @@
+{
+  "id": "exploration",
+  "requiredSceneEvidence": [
+    "at least one reachable region",
+    "at least one valid spawn surface"
+  ],
+  "optionalSceneEvidence": [
+    "landmarks",
+    "containers"
+  ],
+  "requiredMechanics": [
+    "movement_or_pointer_navigation",
+    "discovery_objective",
+    "completion_condition"
+  ],
+  "recommendedCameraModes": [
+    "limited_first_person",
+    "fixed_view",
+    "orbit_limited"
+  ],
+  "mandatoryTests": [
+    "player can reach discovery targets",
+    "completion triggers once",
+    "restart restores state"
+  ],
+  "fallbackArchetypes": [
+    "fixed_view_discovery",
+    "screen_space_click"
+  ]
+}

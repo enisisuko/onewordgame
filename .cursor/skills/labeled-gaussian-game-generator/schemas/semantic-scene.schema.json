@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "semantic-scene.schema.json",
+  "type": "object",
+  "required": [
+    "sceneId",
+    "entities"
+  ],
+  "properties": {
+    "sceneId": {
+      "type": "string"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "semanticType",
+          "position"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "semanticType": {
+            "type": "string"
+          },
+          "position": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "bounds": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "max": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ]
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "affordances": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gameRoles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relations": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

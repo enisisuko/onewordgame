@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "game-spec.schema.json",
+  "type": "object",
+  "required": [
+    "title",
+    "genre",
+    "winCondition",
+    "loseCondition",
+    "mechanics"
+  ],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "genre": {
+      "type": "string"
+    },
+    "perspective": {
+      "type": "string"
+    },
+    "playabilityMode": {
+      "type": "string"
+    },
+    "durationSeconds": {
+      "type": "number"
+    },
+    "player": {
+      "type": "object"
+    },
+    "coreLoop": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "winCondition": {
+      "type": "object"
+    },
+    "loseCondition": {
+      "type": "object"
+    },
+    "mechanics": {
+      "type": "array"
+    },
+    "acceptanceTests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scene-labels.schema.json",
+  "type": "object",
+  "required": [
+    "sceneId",
+    "objects"
+  ],
+  "properties": {
+    "sceneId": {
+      "type": "string"
+    },
+    "coordinateSystem": {
+      "type": "object"
+    },
+    "sourceCamera": {
+      "type": "object"
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

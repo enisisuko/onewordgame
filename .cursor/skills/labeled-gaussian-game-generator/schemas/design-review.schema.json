@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "design-review.schema.json",
+  "type": "object",
+  "required": [
+    "approved"
+  ],
+  "properties": {
+    "approved": {
+      "type": "boolean"
+    },
+    "coreFantasyPreserved": {
+      "type": "boolean"
+    },
+    "sceneSupportScore": {
+      "type": "number"
+    }
+  }
+}

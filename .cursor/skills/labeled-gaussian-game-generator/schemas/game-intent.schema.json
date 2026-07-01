@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "game-intent.schema.json",
+  "type": "object",
+  "required": [
+    "rawRequest",
+    "explicitIntent",
+    "inferredIntent"
+  ],
+  "properties": {
+    "rawRequest": {
+      "type": "string"
+    },
+    "explicitIntent": {
+      "type": "object"
+    },
+    "inferredIntent": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ambiguities": {
+      "type": "array"
+    },
+    "hardRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "softPreferences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

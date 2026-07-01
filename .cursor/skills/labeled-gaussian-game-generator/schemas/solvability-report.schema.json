@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "solvability-report.schema.json",
+  "type": "object",
+  "required": [
+    "solvable"
+  ],
+  "properties": {
+    "solvable": {
+      "type": "boolean"
+    },
+    "path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verifiedConditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "detective",
+  "requiredSceneEvidence": [
+    "at least three inspectable objects",
+    "final inference or choice point"
+  ],
+  "optionalSceneEvidence": [
+    "terminals",
+    "documents"
+  ],
+  "requiredMechanics": [
+    "inspect",
+    "clue_tracking",
+    "final_choice_or_solution"
+  ],
+  "recommendedCameraModes": [
+    "fixed_view",
+    "limited_first_person"
+  ],
+  "mandatoryTests": [
+    "three clues reachable",
+    "evidence chain complete",
+    "wrong answer gives feedback"
+  ],
+  "fallbackArchetypes": [
+    "hidden_object_clues",
+    "screen_space_puzzle"
+  ]
+}

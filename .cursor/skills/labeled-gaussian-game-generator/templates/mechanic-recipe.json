@@ -1,0 +1,32 @@
+{
+  "id": "collection",
+  "requiredSceneEvidence": [
+    "at least one reachable region",
+    "spawn surfaces or collectibles"
+  ],
+  "optionalSceneEvidence": [
+    "containers",
+    "shelves",
+    "tables"
+  ],
+  "requiredMechanics": [
+    "movement_or_pointer_navigation",
+    "pickup_or_click",
+    "progress_tracking",
+    "completion_condition"
+  ],
+  "recommendedCameraModes": [
+    "limited_first_person",
+    "fixed_view",
+    "top_down"
+  ],
+  "mandatoryTests": [
+    "all required collectibles are reachable",
+    "completion triggers exactly once",
+    "restart restores every collectible"
+  ],
+  "fallbackArchetypes": [
+    "hidden_object",
+    "screen_space_collection"
+  ]
+}

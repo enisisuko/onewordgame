@@ -1,0 +1,38 @@
+{
+  "title": "Example Game",
+  "genre": "collection",
+  "perspective": "first_person",
+  "playabilityMode": "limited_3d",
+  "durationSeconds": 60,
+  "player": {
+    "spawnAnchor": "floor_01",
+    "moveSpeed": 2.5,
+    "interactionDistance": 2.0
+  },
+  "coreLoop": [
+    "explore",
+    "interact",
+    "complete objective"
+  ],
+  "winCondition": {
+    "type": "collect",
+    "requiredCount": 3
+  },
+  "loseCondition": {
+    "type": "timer",
+    "seconds": 60
+  },
+  "mechanics": [
+    {
+      "type": "pickup",
+      "sourceLabels": [
+        "collectible"
+      ]
+    }
+  ],
+  "acceptanceTests": [
+    "player can move",
+    "objective completable",
+    "restart works"
+  ]
+}
