@@ -1,0 +1,124 @@
+{
+  "simulation": "angle-finder-gaussian-game",
+  "cases": [
+    {
+      "caseId": "coffee_mug_angle",
+      "feasibility": {
+        "suitable": true,
+        "peakClarity": 1.0,
+        "peakWidthDeg": 25.0,
+        "offPeakMeanClarity": 0.08,
+        "symmetryRisk": 0.16,
+        "recommendedMode": "angle_orbit",
+        "reason": "ok"
+      },
+      "peakClarity": 1.0,
+      "recommendedMode": "angle_orbit",
+      "guessMode": "text",
+      "intent": {
+        "rawRequest": "用这张粗糙高斯图做一个找角度猜咖啡杯的游戏",
+        "correctAnswer": "咖啡杯",
+        "difficulty": "normal",
+        "sessionLengthSeconds": 90,
+        "targetPlatform": "mobile_web"
+      },
+      "uiPlan": {
+        "clarityMeter": {
+          "type": "horizontal_bar",
+          "position": "top"
+        },
+        "compass": {
+          "enabled": true
+        },
+        "guessPanel": {
+          "mode": "text",
+          "position": "bottom"
+        },
+        "timer": {
+          "position": "top_right",
+          "seconds": 90
+        }
+      }
+    },
+    {
+      "caseId": "vase_symmetric_fallback",
+      "feasibility": {
+        "suitable": false,
+        "peakClarity": 1.0,
+        "peakWidthDeg": 25.0,
+        "offPeakMeanClarity": 0.08,
+        "symmetryRisk": 0.82,
+        "recommendedMode": "multi_choice_reveal",
+        "reason": "bilateral symmetry — multiple equally valid viewing angles"
+      },
+      "peakClarity": 1.0,
+      "recommendedMode": "multi_choice_reveal",
+      "guessMode": "multi_choice",
+      "intent": {
+        "rawRequest": "旋转花瓶猜是什么，限时90秒",
+        "correctAnswer": "花瓶",
+        "difficulty": "normal",
+        "sessionLengthSeconds": 90,
+        "targetPlatform": "mobile_web"
+      },
+      "uiPlan": {
+        "clarityMeter": {
+          "type": "horizontal_bar",
+          "position": "top"
+        },
+        "compass": {
+          "enabled": false
+        },
+        "guessPanel": {
+          "mode": "multi_choice",
+          "position": "bottom"
+        },
+        "timer": {
+          "position": "top_right",
+          "seconds": 90
+        }
+      }
+    },
+    {
+      "caseId": "workshop_inferred_camera",
+      "feasibility": {
+        "suitable": true,
+        "peakClarity": 1.0,
+        "peakWidthDeg": 40.0,
+        "offPeakMeanClarity": 0.14,
+        "symmetryRisk": 0.33,
+        "recommendedMode": "angle_orbit",
+        "reason": "ok"
+      },
+      "peakClarity": 1.0,
+      "recommendedMode": "angle_orbit",
+      "guessMode": "text",
+      "intent": {
+        "rawRequest": "做一个移动端找角度识别工作台的游戏",
+        "correctAnswer": "木工工作台",
+        "difficulty": "normal",
+        "sessionLengthSeconds": 90,
+        "targetPlatform": "mobile_web"
+      },
+      "uiPlan": {
+        "clarityMeter": {
+          "type": "horizontal_bar",
+          "position": "top"
+        },
+        "compass": {
+          "enabled": true
+        },
+        "guessPanel": {
+          "mode": "text",
+          "position": "bottom"
+        },
+        "timer": {
+          "position": "top_right",
+          "seconds": 90
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "errorCount": 0
+}

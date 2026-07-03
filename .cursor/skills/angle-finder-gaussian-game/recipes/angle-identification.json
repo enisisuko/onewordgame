@@ -1,0 +1,56 @@
+{
+  "id": "angle-identification",
+  "description": "Find the best viewing angle to identify a rough single-view Gaussian subject",
+  "requiredInputs": [
+    "user image",
+    "correct answer label",
+    "fast gaussian api config"
+  ],
+  "requiredApiFields": [
+    "sog_url",
+    "metadata.source_camera",
+    "metadata.centroid",
+    "metadata.bounds"
+  ],
+  "coreMechanics": [
+    "orbit_camera_or_rotate_splat",
+    "clarity_score_vs_angle",
+    "visual_degradation_off_peak",
+    "guess_or_confirm_identification"
+  ],
+  "optionalMechanics": [
+    "timer",
+    "rotation_budget",
+    "hint_system",
+    "zoom"
+  ],
+  "winConditions": [
+    "correct_guess",
+    "clarity_confirm",
+    "clarity_reveal_then_guess"
+  ],
+  "failConditions": [
+    "timeout",
+    "max_wrong_guesses",
+    "rotation_budget"
+  ],
+  "recommendedCameraMode": "orbit_camera",
+  "recommendedPlatform": "mobile_web",
+  "fallbackMode": "multi_choice_reveal",
+  "fallbackTriggers": [
+    "symmetryRisk > 0.7",
+    "missing source_camera",
+    "angle-feasibility.suitable == false"
+  ],
+  "mandatoryTests": [
+    "clarity peaks at source camera azimuth",
+    "off-angle clarity below 0.35 at 90deg offset",
+    "correct guess triggers win state",
+    "third wrong guess triggers loss",
+    "timer expiry triggers loss",
+    "restart resets angle timer and guesses",
+    "symmetric mock case degrades to multi_choice"
+  ],
+  "playcanvasNotes": "Orbit-only; no FPS billboard pick. Touch drag on canvas. See references/playcanvas-angle-game-pattern.md.",
+  "distinctFrom": "labeled-gaussian-game-generator — no semantic scene graph required"
+}

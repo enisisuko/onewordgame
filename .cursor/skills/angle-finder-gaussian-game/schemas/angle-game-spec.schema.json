@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "angle-game-spec.schema.json",
+  "title": "AngleGameSpec",
+  "type": "object",
+  "required": [
+    "gameId",
+    "correctAnswer",
+    "winCondition",
+    "orbitMode",
+    "clarityWinThreshold",
+    "sessionLengthSeconds",
+    "maxWrongGuesses"
+  ],
+  "properties": {
+    "gameId": { "type": "string" },
+    "title": { "type": "string" },
+    "correctAnswer": { "type": "string", "minLength": 1 },
+    "guessMode": { "type": "string", "enum": ["text", "multi_choice"] },
+    "choices": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "maxItems": 6
+    },
+    "distractors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "winCondition": {
+      "type": "string",
+      "enum": ["correct_guess", "clarity_confirm", "clarity_reveal_then_guess"]
+    },
+    "failConditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["timeout", "max_wrong_guesses", "rotation_budget", "forfeit"]
+      }
+    },
+    "orbitMode": { "type": "string", "enum": ["orbit_camera", "rotate_splat"] },
+    "clarityWinThreshold": { "type": "number", "minimum": 0.5, "maximum": 1 },
+    "sessionLengthSeconds": { "type": "number", "minimum": 15, "maximum": 600 },
+    "maxWrongGuesses": { "type": "number", "minimum": 1, "maximum": 10 },
+    "enableRotationBudget": { "type": "boolean" },
+    "rotationBudgetRadians": { "type": "number", "minimum": 3.14 },
+    "hintCount": { "type": "number", "minimum": 0, "maximum": 5 },
+    "targetPlatform": { "type": "string", "enum": ["mobile_web", "desktop_web", "both"] },
+    "recommendedMode": { "type": "string", "enum": ["angle_orbit", "multi_choice_reveal"] },
+    "metadataRef": { "type": "string" },
+    "clarityCurveRef": { "type": "string" }
+  }
+}

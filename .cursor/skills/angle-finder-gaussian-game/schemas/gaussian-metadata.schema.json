@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gaussian-metadata.schema.json",
+  "title": "GaussianMetadata",
+  "type": "object",
+  "required": ["sceneId", "centroid", "bounds", "sourceCamera"],
+  "properties": {
+    "sceneId": { "type": "string" },
+    "sogUrl": { "type": "string" },
+    "plyUrl": { "type": "string" },
+    "centroid": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "bounds": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "max": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+      }
+    },
+    "sourceCamera": {
+      "type": "object",
+      "required": ["position", "target"],
+      "properties": {
+        "position": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "fov": { "type": "number", "minimum": 10, "maximum": 120 },
+        "azimuthDeg": { "type": "number" },
+        "elevationDeg": { "type": "number" }
+      }
+    },
+    "subjectLabel": { "type": "string" },
+    "viewQuality": { "type": "string", "enum": ["rough", "medium", "high"] },
+    "singleViewConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "inferredCamera": { "type": "boolean" },
+    "pipeline": { "type": "string", "enum": ["fast", "full"] }
+  }
+}
