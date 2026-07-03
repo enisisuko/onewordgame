@@ -39,24 +39,49 @@ description: Generate a playable "find the best viewing angle" identification ga
 
 可选增强：错误选项列表、提示文案、移动端触控偏好。
 
-## Existing API Discovery
+## Image Input & Upload
 
-**必须先**在项目中查找，不得自建第二套重建流程：
+用户可通过多种方式提供场景图片；Skill **不**实现重建，只规范化图片并交给公司 API。
 
-- API 客户端、配置、环境变量（如 `FAST_GAUSSIAN_API_URL`、`GAUSSIAN_API_KEY`）
-- 请求脚本、接口文档、类型定义、示例响应
-- 与 `labeled-gaussian-game-generator` 共享的 Gaussian 客户端模式
+| 方式 | 说明 |
+|------|------|
+| CLI 本地路径 | `python scripts/prepare_image_upload.py path/to/photo.jpg` |
+| Cursor 聊天拖放/上传 | Agent 将附件保存后运行 `prepare_image_upload.py` |
+| 已规范化路径 | 直接使用 `output-angle-game/input/source-image.{jpg,png,webp}` |
 
-异步流程：`提交图片 → task_id → 轮询 → completed → 下载 sog + metadata`
+**规范化步骤**（`scripts/prepare_image_upload.py`）：
 
-API Key：只从环境变量/本地配置读取；**禁止**写入前端、Git 或完整日志。见 `references/fast-gaussian-api-contract.md`。
+1. 校验格式：jpg / png / webp（魔数 + 扩展名）
+2. 超过 10MB 时警告（stdlib 不重采样，仅提示）
+3. 复制到 `output-angle-game/input/source-image.{ext}`
+4. 写出 `upload-manifest.json`：`localPath`, `mimeType`, `sizeBytes`, `sha256`, 可选 `width`/`height`
 
-## Fast Gaussian API Workflow
+**到达 API**：`request_fast_gaussian_api.py` 读取规范化图片，按 config 以 multipart（默认）、base64 JSON 或 pre-signed URL 提交。详见 `references/fast-gaussian-api-contract.md`。
+
+```bash
+python scripts/prepare_image_upload.py my-scene.jpg
+python scripts/request_fast_gaussian_api.py output-angle-game/input/source-image.jpg \
+  --output-dir output-angle-game/assets
+```
+
+## Fast Gaussian API Integration
+
+- **契约文档**：`references/fast-gaussian-api-contract.md`
+- **配置模板**：`templates/gaussian-api.config.json.example` → 复制为根目录 `gaussian-api.config.json`（已 gitignore）
+- **环境变量**：`FAST_GAUSSIAN_API_URL` / `GAUSSIAN_API_URL`，`FAST_GAUSSIAN_API_KEY` / `GAUSSIAN_API_KEY`，可选 `FAST_GAUSSIAN_API_CONFIG`
+- **发现规则**：必须先搜索项目既有 Gaussian 客户端，禁止自建第二套重建；与 `labeled-gaussian-game-generator` 共享发现模式，响应字段按 fast 契约解析
+- **完整标注管线**：见兄弟 Skill `labeled-gaussian-game-generator/references/gaussian-api-contract.md`
+
+无 URL/Key 或 `--dry-run` 时，脚本写出占位 `api-response.json` 并复制图片，便于离线开发。
+
+## Pipeline Workflow
 
 ```text
-用户图片 + 识别游戏需求
+用户图片（路径 / Cursor 聊天上传）
+  → scripts/prepare_image_upload.py
+  → output-angle-game/input/source-image.{ext} + upload-manifest.json
   → scripts/request_fast_gaussian_api.py（或项目既有 fast 客户端）
-  → sog / ply + gaussian-metadata.json
+  → output-angle-game/assets/（gaussian-metadata.json、api-response.json、asset-urls.json）
   → scripts/build_clarity_curve.py
   → clarity-curve.json
   → angle-feasibility.json（是否适合角度谜题）
@@ -243,12 +268,20 @@ Root
 
 | 脚本 | 用途 |
 |------|------|
-| `request_fast_gaussian_api.py` | 调用 fast API，写出 metadata |
+| `prepare_image_upload.py` | 校验/规范化用户图片，写 `upload-manifest.json` |
+| `request_fast_gaussian_api.py` | 调用 fast API（multipart/轮询），写出 metadata 与 asset manifest |
 | `build_clarity_curve.py` | 从 sourceCamera + bounds 生成 clarity 曲线 |
 | `validate_angle_game_spec.py` | 校验 game-spec.json |
 | `run_angle_game_simulation.py` | 3 个 mock 案例端到端模拟 |
 
 ```bash
+# 图片上传准备
+python scripts/prepare_image_upload.py photo.jpg --output-dir output-angle-game
+
+# Fast API（离线占位）
+python scripts/request_fast_gaussian_api.py output-angle-game/input/source-image.jpg \
+  --output-dir output-angle-game/assets --dry-run
+
 # 生成 clarity 曲线
 python scripts/build_clarity_curve.py output-angle-game/assets/gaussian-metadata.json \
   --output output-angle-game/generated/clarity-curve.json
@@ -266,7 +299,8 @@ python scripts/run_angle_game_simulation.py
 
 ## Testing Checklist
 
-- [ ] `request_fast_gaussian_api.py` 在配置齐全时能写出 metadata 占位/真实响应
+- [ ] `prepare_image_upload.py` 写出 `upload-manifest.json` 与规范化 `source-image.*`
+- [ ] `request_fast_gaussian_api.py` 在配置齐全时能写出 metadata / dry-run 占位
 - [ ] `build_clarity_curve.py` 峰值落在 sourceCamera 方向
 - [ ] `validate_angle_game_spec.py` 对合法/非法 spec 分别 PASS/FAIL
 - [ ] `run_angle_game_simulation.py` 三个 mock 案例全部 PASS
@@ -291,8 +325,13 @@ python scripts/run_angle_game_simulation.py
 
 ```text
 output-angle-game/
+├── input/
+│   ├── source-image.jpg             （规范化源图）
+│   └── upload-manifest.json         （sha256、mime、尺寸）
 ├── assets/
 │   ├── gaussian-metadata.json
+│   ├── api-response.json            （gitignored，可能含敏感 URL）
+│   ├── asset-urls.json
 │   └── scene.sog                    （或 API 下载路径）
 ├── generated/
 │   ├── game-intent.json

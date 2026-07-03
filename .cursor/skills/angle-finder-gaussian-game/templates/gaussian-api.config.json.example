@@ -1,0 +1,12 @@
+{
+  "baseUrl": "https://api.example.com/v1",
+  "apiKeyEnv": "FAST_GAUSSIAN_API_KEY",
+  "submitEndpoint": "/gaussian/fast",
+  "pollEndpoint": "/tasks/{task_id}",
+  "uploadMode": "multipart",
+  "imageFieldName": "image",
+  "timeoutSeconds": 300,
+  "pollIntervalSeconds": 2,
+  "authHeader": "Bearer",
+  "syncResponse": false
+}
