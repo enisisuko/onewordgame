@@ -161,13 +161,16 @@ python scripts/detect_mechanic_conflicts.py --playability limited_3d --mechanics
 
 ## PlayCanvas Runtime
 
-当目标工程或模板使用 PlayCanvas（默认）时，运行时实现应对齐 `C:\WORKS\playcanvas\scripts\cloud-patched\`：
+当目标工程或模板使用 PlayCanvas（默认）时，运行时实现应对齐 `C:\WORKS\playcanvas\scripts\`（`cloud-patched\` 与 `fishing\`）：
 
-- **FPS 探索**：`gameManager` + `character-controller` + `billboardUi` 射线交互
+- **FPS 探索**：`gameManager` + `character-controller`
+- **世界交互（两种范式）**：
+  - **路标 + 接触触发**（`worldMarker`，`scripts/fishing/`）：空间内几个路标，玩家走入球形 trigger / 邻近距离即 `app.fire('marker:touch', {type, marker})` — 对应「空间内几个路标和接触触发的事件」
+  - **广告牌射线拾取**（`billboardUi`，`scripts/cloud-patched/`）：瞄准点击，`GameManager.interactDistance`（默认 12）内命中
 - **竖屏 UI**：`UiLayout.createScreen` + `createCanvasPanel` + Canvas2D 绘制（720×1280）
-- **内置小游戏**：poker / pachinko / sleep（可选 shop 于 fishing 分支）
+- **内置小游戏（逻辑闭环）**：poker / pachinko / sleep（casino）、fishing / roast / rest / shop（fishing）；每个都是 `openSession → 阶段状态机（下注→进行→结算→重开/退出）→ 回到 fps` 的闭环 — 对应「几个游戏 UI 和逻辑闭环」
 
-生成物绑定语义标签时：每个可交互标签对应一个 **Billboard 实体**（`billboardUi` + `element`），`interactionType` 与 `GameManager.interactDistance`（默认 12）决定可达性。详见 `references/playcanvas-interaction-pattern.md`。
+生成物绑定语义标签时：可走入的地面对象用 **`worldMarker`**（自建 sphere trigger），需远距点选的竖直招牌用 **`billboardUi`**（`interactionType` + `interactDistance`）。选择规则与代码级契约见 `references/playcanvas-interaction-pattern.md`；锚点→路标→事件→模式→UI 的端到端接线见 `references/playcanvas-scene-wiring.md`。
 
 ## PlayCanvas MCP Connection
 
@@ -198,10 +201,13 @@ python scripts/detect_mechanic_conflicts.py --playability limited_3d --mechanics
 | pachinko, slot_machine | `pachinko` |
 | bed, couch, rest_area | `sleep` |
 
-3. MCP：`list_entities` → `create_entities` → `add_components` / `add_script_component_script`（billboardUi）
+3. MCP（广告牌）：`list_entities` → `create_entities` → `add_components`（element）→ `add_script_component_script`（billboardUi）→ `modify_entities`（设 interactionType）
 4. 校验：Launch 后准星/点击能在 `interactDistance` 内命中；HUD 底部出现 `CLICK · POKER` 等提示
 
-钓鱼类项目可改用 **WorldMarker  proximity**（`scripts/fishing/world-marker.js`），见 interaction pattern 文档「Alternative」节。
+**路标 + 接触触发（推荐用于可走入的地面对象）**：用 `worldMarker`（`scripts/fishing/world-marker.js`）。
+最小 MCP footprint：`create_entities`（锚点空实体）→ `add_script_component_script`（worldMarker）→ `modify_entities`
+设 `interactionType`/`triggerRadius`/`labelText`；脚本会自建 sphere **trigger**（MCP schema 无 `trigger` 字段，勿手写碰撞）+ 标签 + 网格。
+玩家走入即 `marker:touch`。完整调用序列与两种范式对照见 `references/playcanvas-scene-wiring.md`。
 
 ## UI Minigame Integration
 
@@ -274,13 +280,16 @@ python scripts/detect_mechanic_conflicts.py --playability limited_3d --mechanics
 
 ## UI Minigame Integration
 
-小游戏不直接由 billboard 打开 UI，而由 **GameManager 事件**驱动：
+小游戏不直接由 billboard/marker 打开 UI，而由 **GameManager 事件**驱动（两条入口同源）：
 
 ```text
-billboard pick → startPoker|startPachinko|startSleep
-  → energy 检查（sleep 除外）→ lockPlayer → setMode
-  → app.fire('game:enterPoker' | 'game:enterPachinko' | 'game:enterSleep')
-  → *Game 启用 UiLayout Screen + Canvas 面板
+worldMarker 接触 → marker:touch{type,marker} → _onMarkerTouch → _tryMarkerAction(type)
+billboardUi 点击 → _triggerAimInteract
+  → start<Mode>()（fishing|roast|rest|shop 或 poker|pachinko|sleep）
+  → 资源检查（energy/gold/satiety，sleep/rest 免）→ lockPlayer → setMode
+  → app.fire('game:enter<Mode>')
+  → <Mode>Game.openSession() 启用 UiLayout Screen + Canvas 面板（闭环状态机）
+  → 退出/完成 → app.fire('game:exit*') → gm.setMode('fps') + unlockPlayer
 ```
 
 实现新 PlayCanvas 小游戏时：
@@ -317,10 +326,21 @@ const mechanicRegistry = {
   unlock: createUnlockMechanic,
   enemyPatrol: createEnemyPatrolMechanic,
   fishing: createFishingMechanic,
+  // PlayCanvas 空间交互 + UI 闭环（对齐 scripts/fishing + cloud-patched）
+  waypointMarker: createWaypointMarkerMechanic, // worldMarker：球形 trigger + 邻近距离 → app.fire('marker:touch', {type, marker})
+  canvasMinigame: createCanvasMinigameMechanic, // UiLayout Screen 面板：openSession → 阶段状态机 → game:enter*/exit* → 回到 fps
 };
 ```
 
-4. 事件总线：`game:won`, `item:picked`, `objective:completed`, `timer:expired` 等；机制间勿直接改内部状态。
+- **`waypointMarker`**（接触触发）：在锚点放置 `worldMarker` 实体；每个路标持有一个 `interactionType`，玩家走入
+  即发 `marker:touch`（0.3s 去抖，仅 `fps` 模式）。GameManager 以 `marker.entity.getGuid()` 做 0.5s 冷却并路由到 `start<Mode>()`。
+- **`canvasMinigame`**（闭环 UI）：一个模式对应一个 `UiLayout` Screen 面板，`app.on('game:enter<Mode>')` 打开
+  `openSession()`，跑「开始→进行→胜/负→重开/退出」闭环，退出时 `gm.setMode('fps') + unlockPlayer()`。
+  实现新玩法优先复用此壳并替换 Canvas2D 规则，而非新增 mode 或绕过 GameManager。
+- 二者组合即「几个路标 + 几个 UI 闭环」：详见 `references/playcanvas-scene-wiring.md`。
+
+4. 事件总线：`game:won`, `item:picked`, `objective:completed`, `timer:expired`、以及 PlayCanvas 的
+   `marker:touch` / `marker:exit` / `game:enter*` / `game:exit*` / `game:uiMode`；机制间勿直接改内部状态。
 
 5. 配方库：`recipes/*.json` — 只定义最小结构、场景证据、必测项与降级路线。
 
@@ -385,9 +405,7 @@ python scripts/route_game_genre.py output-game/generated/game-intent.json --outp
 - `references/genre-routing.md`
 - `references/mechanic-primitives.md`
 - `references/mechanic-conflicts.md`
-- `references/playcanvas-interaction-pattern.md` — `interactDistance`, billboard ray pick, label→interactionType
-- `references/playcanvas-ui-minigame-pattern.md` — mode machine, event bus, UiLayout 小游戏
-- `references/playcanvas-mcp-workflow.md` — MCP 前置、22 工具、REST 上传回退
-- `references/playcanvas-interaction-pattern.md` — interactDistance、BillboardUi 射线、标签→interactionType、WorldMarker 备选
-- `references/playcanvas-ui-minigame-pattern.md` — 模式机、事件总线、UiLayout 面板、能量/金币门控
+- `references/playcanvas-interaction-pattern.md` — 两种范式：BillboardUi 射线拾取 + WorldMarker 路标接触触发（`marker:touch`）、`interactDistance`、标签→interactionType、trigger/proximity/ray-pick 选择
+- `references/playcanvas-ui-minigame-pattern.md` — 模式机（casino + fishing）、事件总线、UiLayout 面板、闭环状态机、能量/金币门控
+- `references/playcanvas-scene-wiring.md` — 锚点→路标→事件→模式→UI 闭环端到端接线 + 具体 MCP 调用序列（create_entities / add_script_component_script / modify_entities）
 - `references/playcanvas-mcp-workflow.md` — MCP 前置、23 工具、摆放流程、REST 上传与 project ID

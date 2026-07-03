@@ -4,7 +4,9 @@ Source of truth: `C:\WORKS\playcanvas\scripts\cloud-patched\` (`game-manager.js`
 
 ## GameManager mode machine
 
-`GameManager.mode` is a string state machine:
+`GameManager.mode` is a string state machine. Two GM variants ship the same shell with different mode sets:
+
+**Casino / explorer** (`cloud-patched/game-manager.js`, project 1551971):
 
 | Mode | Player control | HUD | Typical entry |
 |------|----------------|-----|---------------|
@@ -12,12 +14,21 @@ Source of truth: `C:\WORKS\playcanvas\scripts\cloud-patched\` (`game-manager.js`
 | `poker` | Locked | Hidden (panel anim exit) | `startPoker()` |
 | `pachinko` | Locked | Hidden | `startPachinko()` |
 | `sleep` | Locked | Hidden | `startSleep()` |
-| `shop` | Locked | Hidden | `shopGame` → `gm.setMode('shop')` *(fishing/shop stack)* |
+
+**Fishing sim** (`fishing/game-manager.js`, project 1552576):
+
+| Mode | Player control | HUD | Typical entry |
+|------|----------------|-----|---------------|
+| `fps` | Unlocked | FPS HUD | Default, exit from mini-games |
+| `fishing` | Locked | Hidden | `startFishing()` |
+| `roast` | Locked | Hidden | `startRoastFish()` |
+| `rest` | Locked | Hidden | `startRest()` |
+| `shop` | Locked | Hidden | `openShop()` |
 
 `setMode(mode)`:
 
-- `fps`: unlock player, re-enable platform input, HUD enter anim
-- Other: release move keys, clear billboard hover, HUD exit anim, `app.fire('game:uiMode', mode)`
+- `fps`: unlock player, re-enable platform input, HUD enter anim; fishing GM also calls `_resetMarkerState()` (clears marker cooldowns + `WorldMarker.setInRangeByType(null)`)
+- Other: release move keys, clear billboard hover / marker highlight, HUD exit anim, `app.fire('game:uiMode', mode)`
 
 `_canInteract()` returns true only when `mode === 'fps'` — mini-games cannot chain-start from inside another mode.
 
@@ -25,13 +36,43 @@ Source of truth: `C:\WORKS\playcanvas\scripts\cloud-patched\` (`game-manager.js`
 
 | Event | Emitter | Listeners / effect |
 |-------|---------|-------------------|
+| `marker:touch` | `worldMarker` on contact/proximity (fishing) | `GameManager._onMarkerTouch` → `_tryMarkerAction(type)` |
+| `marker:exit` | `worldMarker` on leave | `GameManager._onMarkerExit` (clears that marker's cooldown) |
 | `game:enterPoker` | `GameManager.startPoker()` | `pokerGame.openSession()` |
 | `game:enterPachinko` | `GameManager.startPachinko()` | `pachinkoGame.openSession()` |
 | `game:enterSleep` | `GameManager.startSleep()` | `sleepTransition.startSleep()` |
-| `game:enterShop` | *(fishing game-manager)* | `shopGame.openSession()` |
+| `game:enterFishing` | `GameManager.startFishing()` *(fishing)* | `fishingGame.openSession()` |
+| `game:enterRoastFish` | `GameManager.startRoastFish()` *(fishing)* | `roastFishGame.openSession()` |
+| `game:enterRest` | `GameManager.startRest()` *(fishing)* | `restTransition.startRest()` |
+| `game:enterShop` | `GameManager.openShop()` *(fishing)* | `shopGame.openSession()` |
+| `game:exitPoker` | `pokerGame.exitGame()` | close hook → `gm.setMode('fps')` |
 | `game:uiMode` | `GameManager._applyUiVisibility()` | Any UI that needs mode-aware visibility |
+| `game:gameOver` | `pokerGame._enterGameOver()` | Optional global game-over hook |
 
 Character controller events (FPS only): `cc:move:*`, `cc:jump`, `cc:sprint`, `cc:crouch`, `cc:look`.
+
+## How a marker/billboard opens the matching UI (closed loop)
+
+The full round trip — waypoint contact (or billboard click) → mode switch → closed-loop UI → back to `fps`:
+
+```text
+[FPS] player walks into worldMarker  (OR clicks billboardUi within interactDistance)
+  → marker:touch { type, marker }     (OR _triggerAimInteract from ray pick)
+  → GameManager._onMarkerTouch        (mode==='fps' guard, per-marker 0.5s cooldown)
+      → _tryMarkerAction(type) → start<Mode>()
+          → resource/economy gate (energy / satiety / stamina / gold)
+          → lockPlayer(); setMouseLocked(); setMode(<mode>)
+          → app.fire('game:enter<Mode>')
+  → <mode>Game.openSession()          (UiLayout Screen enabled, UiTheme enter anim)
+  → ...player completes the mini-game loop (see states below)...
+  → exit / complete:
+      → app.fire('game:exit<Mode>')   (poker) or transition finishes (sleep/rest)
+      → gm.setMode('fps'); gm.unlockPlayer()
+  → [FPS] markers re-armed via _resetMarkerState()
+```
+
+One scene therefore hosts **a few waypoint markers** (each `interactionType` distinct) and **a few closed-loop UIs**,
+one per mode — exactly the "几个路标 + 几个游戏 UI 闭环" structure.
 
 ## UiLayout Canvas panel pattern
 
@@ -102,21 +143,41 @@ FPS aim at billboard (type poker|pachinko|sleep)
   → *Game opens UiLayout screen, UiTheme enter anim
 ```
 
-### Poker / Pachinko flow
+### Closed-loop state machines
 
-1. `openSession()` — enable screen, reset state
-2. If `gold <= 0` → game over panel
-3. `_goToBetting()` — select bet from `[5, 10, 25, 50, 100]`
-4. `confirmBet()` → `spendGold(selectedBet)` → play round
-5. Win/lose → `addGold(payout)` or bust
-6. Exit button → panel exit anim → `setMode('fps')`
+Every mini-game is an explicit `this._phase` state machine with a **start → play → win/lose → restart/exit** cycle.
+This is the "逻辑闭环" the generator must reproduce for each UI.
 
-### Sleep flow
+**`pokerGame` (blackjack)** — `_phase`:
 
-1. `startSleep()` — full-screen `UiTheme.drawRestScreen`
-2. Phases: `fadeOut` → `hold` (default 1.2s) → `fadeIn`
-3. On hold end: `gm.restoreEnergy(gm.maxEnergy)`
-4. Complete: toast `REST COMPLETE — ENERGY RESTORED`, return to `fps`
+```text
+idle → betting → playing → result → (restart ⇒ betting | exit)
+                      ↘ gold<=0 ⇒ gameover → (reset credits ⇒ betting | exit)
+```
+
+- `openSession()` (on `game:enterPoker`) → enable screen, reset, `_goToBetting()`
+- `betting`: pick chip from `[5,10,25,50,100]`; `confirmBet()` → `spendGold(bet)` → `_startRound()`
+- `playing`: `hit()` / `stand()`; bust or stand → `_finishRound()` (dealer draws to 17)
+- `result`: `addGold(payout)` (win 2×, blackjack 2.5×, push 1×); buttons `restart` → `_goToBetting()`, `exit`
+- `gameover` (gold ≤ 0): `gameOverReset` → `gm.resetGold()`, or `gameOverExit`
+- `exitGame()`: panel exit anim → `game:exitPoker` → `gm.setMode('fps')` + `gm.unlockPlayer()`
+- Keys: `F` hit, `E` stand, `R` restart, `Q`/`Esc` exit
+
+**`pachinkoGame`** — same shell: `idle → betting → dropping → result → (restart | exit)`; ball physics with
+asymmetric multiplier slots; `spendGold(bet)` on drop, `addGold(bet × slot.m)` on landing.
+
+**`sleepTransition` / `restTransition`** — transition-style closed loop (no scoring):
+
+```text
+idle → fadeOut (0.9s) → hold (1.2s) → fadeIn (0.9s) → idle
+```
+
+- `startSleep()` (on `game:enterSleep`) → full-screen `UiTheme.drawRestScreen`
+- On `hold` end: `gm.restoreEnergy(gm.maxEnergy)` (fishing: `restoreStamina()`)
+- On `fadeIn` end: toast `REST COMPLETE — ENERGY RESTORED`, `gm.setMode('fps')`, `gm.unlockPlayer()`
+
+**`fishingGame` / `roastFishGame` / `shopGame`** (fishing project) follow the identical `openSession()` →
+phase machine → exit-to-`fps` contract, gated on satiety/stamina/gold instead of energy.
 
 ## Energy / gold gating
 
