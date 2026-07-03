@@ -140,15 +140,18 @@ def evaluate_feasibility(
     mean_clarity = sum(clarities) / len(clarities)
     peak_sharpness = peak_clarity / max(mean_clarity, 0.01)
 
-    opposing: list[float] = []
-    for s in samples:
-        if abs(s["pitchDegrees"] - 15) < 8:
-            if abs(abs(s["yawDegrees"]) - 180) < 20 or abs(s["yawDegrees"]) < 20:
-                opposing.append(s["clarity"])
-    symmetry_score = 0.5
-    if len(opposing) >= 2:
-        variance = sum((c - mean_clarity) ** 2 for c in opposing) / len(opposing)
-        symmetry_score = min(1.0, variance * 8)
+    peak_yaw, peak_pitch, _ = infer_canonical_angles(metadata)
+    peak_sample = max(samples, key=lambda s: s["clarity"])
+    at_peak = [s for s in samples if abs(s["yawDegrees"] - peak_sample["yawDegrees"]) < 8
+               and abs(s["pitchDegrees"] - peak_sample["pitchDegrees"]) < 8]
+    off_peak = [s for s in samples if angular_distance_deg(
+        spherical_to_dir(s["yawDegrees"], s["pitchDegrees"]),
+        spherical_to_dir(peak_sample["yawDegrees"], peak_sample["pitchDegrees"]),
+    ) > 60]
+    peak_mean = sum(s["clarity"] for s in at_peak) / max(len(at_peak), 1)
+    off_mean = sum(s["clarity"] for s in off_peak) / max(len(off_peak), 1)
+    asymmetry_ratio = (peak_mean - off_mean) / max(peak_mean, 0.01)
+    symmetry_score = round(min(1.0, max(0.0, asymmetry_ratio)), 3)
 
     view_dep = float(metadata.get("viewDependenceScore", 0.7))
     suitable = peak_sharpness > 1.8 and view_dep > 0.5 and symmetry_score > 0.35

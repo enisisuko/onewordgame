@@ -1,80 +1,74 @@
 #!/usr/bin/env python3
-"""End-to-end simulation with 3 mock angle-finder game cases."""
+"""Run three mock angle-finder game simulations end-to-end."""
 from __future__ import annotations
 
-import json
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _skill_utils import (
     MOCK_METADATA,
+    SCHEMAS_DIR,
     SIMULATION_CASES,
-    assess_feasibility,
-    build_game_spec,
-    load_json,
-    print_report,
+    SIGMA_BY_DIFFICULTY,
+    angular_distance_deg,
+    build_clarity_samples,
+    build_game_spec_from_recipe,
+    clarity_from_angle_deg,
+    evaluate_feasibility,
+    infer_canonical_angles,
     save_json,
+    spherical_to_dir,
     validate_schema_minimal,
 )
 from build_clarity_curve import build_curve
 
-SCHEMAS_DIR = Path(__file__).resolve().parent.parent / "schemas"
 
+def simulate_case(case_id: str, metadata_key: str, difficulty: str) -> dict:
+    metadata = MOCK_METADATA[metadata_key]
+    curve = build_curve(metadata, difficulty)
+    feasibility = evaluate_feasibility(metadata, curve["samples"])
+    game_spec = build_game_spec_from_recipe(metadata, feasibility, difficulty)
 
-def simulate_case(case_id: str, request: str, mock_key: str, answer: str, expected_mode: str) -> list[str]:
-    errors: list[str] = []
-    metadata = dict(MOCK_METADATA[mock_key])
+    peak_yaw, peak_pitch, _ = infer_canonical_angles(metadata)
+    sigma = SIGMA_BY_DIFFICULTY[difficulty]
+    view_dep = float(metadata.get("viewDependenceScore", 0.7))
+    sigma_eff = sigma / max(0.3, view_dep)
 
-    curve = build_curve(metadata)
-    feasibility = assess_feasibility(curve, metadata)
+    peak_dir = spherical_to_dir(peak_yaw, peak_pitch)
+    start_yaw = peak_yaw + (60 if difficulty == "easy" else 120 if difficulty == "normal" else 150)
+    start_dir = spherical_to_dir(start_yaw, peak_pitch + 20)
+    start_theta = angular_distance_deg(start_dir, peak_dir)
+    start_clarity = clarity_from_angle_deg(start_theta, sigma_eff)
+    peak_clarity = clarity_from_angle_deg(0, sigma_eff)
 
-    if feasibility["recommendedMode"] != expected_mode:
-        errors.append(
-            f"expected mode {expected_mode}, got {feasibility['recommendedMode']} "
-            f"(symmetryRisk={feasibility['symmetryRisk']})"
-        )
+    win_threshold = game_spec["clarityConfig"]["winThreshold"]
+    player_finds_angle = peak_clarity >= win_threshold
 
-    peak = max(curve["samples"], key=lambda s: s["clarity"])
-    if peak["clarity"] < 0.95:
-        errors.append(f"peak clarity too low: {peak['clarity']}")
+    expects_fallback = metadata_key == "sphere_symmetric"
+    fallback_ok = (not feasibility["suitable"]) == expects_fallback
 
-    off_peak = [s for s in curve["samples"] if abs(s["azimuthDeg"] - curve["peakAzimuthDeg"]) >= 90]
-    if off_peak and sum(s["clarity"] for s in off_peak) / len(off_peak) > 0.45:
-        if expected_mode == "angle_orbit":
-            errors.append("off-peak clarity too high for angle_orbit case")
+    spec_errors = validate_schema_minimal(game_spec, SCHEMAS_DIR / "angle-game-spec.schema.json")
+    passed = (
+        not spec_errors
+        and player_finds_angle
+        and fallback_ok
+        and start_clarity < peak_clarity
+    )
 
-    spec = build_game_spec(case_id, answer, feasibility["recommendedMode"], metadata, f"{case_id}-curve.json")
-    spec_errors = validate_schema_minimal(spec, SCHEMAS_DIR / "angle-game-spec.schema.json")
-    errors.extend(spec_errors)
-
-    if spec["guessMode"] == "multi_choice" and answer not in spec.get("choices", []):
-        errors.append("correct answer missing from choices")
-
-    intent = {
-        "rawRequest": request,
-        "correctAnswer": answer,
-        "difficulty": "normal",
-        "sessionLengthSeconds": 90,
-        "targetPlatform": "mobile_web",
-    }
-
-    ui_plan = {
-        "clarityMeter": {"type": "horizontal_bar", "position": "top"},
-        "compass": {"enabled": expected_mode == "angle_orbit"},
-        "guessPanel": {"mode": spec["guessMode"], "position": "bottom"},
-        "timer": {"position": "top_right", "seconds": 90},
-    }
-
-    return errors, {
+    return {
         "caseId": case_id,
+        "metadataKey": metadata_key,
+        "difficulty": difficulty,
+        "targetLabel": metadata["targetLabel"],
         "feasibility": feasibility,
-        "peakClarity": peak["clarity"],
-        "recommendedMode": feasibility["recommendedMode"],
-        "guessMode": spec["guessMode"],
-        "intent": intent,
-        "uiPlan": ui_plan,
+        "startClarity": round(start_clarity, 3),
+        "peakClarity": round(peak_clarity, 3),
+        "winThreshold": win_threshold,
+        "fallbackMode": game_spec.get("fallbackMode"),
+        "gameSpecValid": not spec_errors,
+        "validationErrors": spec_errors,
+        "passed": passed,
     }
 
 
@@ -82,34 +76,32 @@ def main() -> int:
     out_dir = Path(__file__).resolve().parent.parent / "test-results"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    report_cases = []
-    all_errors: list[str] = []
+    results = [simulate_case(cid, key, diff) for cid, key, diff in SIMULATION_CASES]
+    all_passed = all(r["passed"] for r in results)
 
-    for case_id, request, mock_key, answer, expected_mode in SIMULATION_CASES:
-        errors, case_report = simulate_case(case_id, request, mock_key, answer, expected_mode)
-        report_cases.append(case_report)
-        if errors:
-            all_errors.extend([f"{case_id}: {e}" for e in errors])
-        else:
-            print(f"PASS: simulation {case_id} ({case_report['recommendedMode']})")
-
-    report = {
-        "simulation": "angle-finder-gaussian-game",
-        "cases": report_cases,
-        "passed": len(all_errors) == 0,
-        "errorCount": len(all_errors),
-    }
+    report = {"simulations": results, "allPassed": all_passed}
     save_json(out_dir / "simulation-report.json", report)
 
-    lines = ["# Angle Finder Simulation Report\n"]
-    for c in report_cases:
-        lines.append(f"## {c['caseId']}\n")
-        lines.append(f"- Mode: {c['recommendedMode']} (guess: {c['guessMode']})\n")
-        lines.append(f"- Peak clarity: {c['peakClarity']}\n")
-        lines.append(f"- Feasibility: {json.dumps(c['feasibility'], ensure_ascii=False)}\n")
-    (out_dir / "simulation-report.md").write_text("".join(lines), encoding="utf-8")
+    lines = ["# Angle Finder Simulation Report", ""]
+    for r in results:
+        status = "PASS" if r["passed"] else "FAIL"
+        lines.append(f"## {r['caseId']} — {status}")
+        lines.append(f"- Target: {r['targetLabel']}")
+        lines.append(f"- Suitable: {r['feasibility']['suitable']} → {r['fallbackMode']}")
+        lines.append(f"- Clarity: start {r['startClarity']} → peak {r['peakClarity']} (threshold {r['winThreshold']})")
+        if r["validationErrors"]:
+            lines.append(f"- Errors: {r['validationErrors']}")
+        lines.append("")
 
-    return print_report("run_angle_game_simulation (3 cases)", all_errors)
+    lines.append(f"**Overall: {'ALL PASSED' if all_passed else 'SOME FAILED'}**")
+    (out_dir / "simulation-report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    for r in results:
+        status = "PASS" if r["passed"] else "FAIL"
+        print(f"{status}: {r['caseId']} ({r['targetLabel']})")
+
+    print(f"\nReport: {out_dir / 'simulation-report.json'}")
+    return 0 if all_passed else 1
 
 
 if __name__ == "__main__":

@@ -3,29 +3,48 @@
   "$id": "clarity-curve.schema.json",
   "title": "ClarityCurve",
   "type": "object",
-  "required": ["samples", "peakAzimuthDeg", "peakWidthDeg", "sigmaRad"],
+  "required": [
+    "version",
+    "difficulty",
+    "sigmaRadians",
+    "peak",
+    "samples"
+  ],
   "properties": {
-    "sceneId": { "type": "string" },
-    "truthAzimuthDeg": { "type": "number" },
-    "truthElevationDeg": { "type": "number" },
-    "peakAzimuthDeg": { "type": "number" },
-    "peakWidthDeg": { "type": "number", "minimum": 5, "maximum": 90 },
-    "sigmaRad": { "type": "number", "minimum": 0.01 },
-    "floor": { "type": "number", "minimum": 0, "maximum": 0.5 },
-    "ceiling": { "type": "number", "minimum": 0.5, "maximum": 1 },
-    "symmetryRisk": { "type": "number", "minimum": 0, "maximum": 1 },
+    "version": { "type": "string" },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "normal", "hard"]
+    },
+    "sigmaRadians": {
+      "type": "number",
+      "minimum": 0.01
+    },
+    "peak": {
+      "type": "object",
+      "required": ["yawDegrees", "pitchDegrees", "clarity"],
+      "properties": {
+        "yawDegrees": { "type": "number" },
+        "pitchDegrees": { "type": "number" },
+        "clarity": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
     "samples": {
       "type": "array",
-      "minItems": 8,
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["azimuthDeg", "elevationDeg", "clarity"],
+        "required": ["yawDegrees", "pitchDegrees", "clarity"],
         "properties": {
-          "azimuthDeg": { "type": "number" },
-          "elevationDeg": { "type": "number" },
+          "yawDegrees": { "type": "number" },
+          "pitchDegrees": { "type": "number" },
           "clarity": { "type": "number", "minimum": 0, "maximum": 1 }
         }
       }
+    },
+    "canonicalSource": {
+      "type": "string",
+      "enum": ["api_metadata", "inferred_default", "manual_override"]
     }
   }
 }

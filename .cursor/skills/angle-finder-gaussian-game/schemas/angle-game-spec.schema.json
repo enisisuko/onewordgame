@@ -4,50 +4,94 @@
   "title": "AngleGameSpec",
   "type": "object",
   "required": [
-    "gameId",
-    "correctAnswer",
+    "title",
+    "genre",
+    "targetLabel",
+    "coreLoop",
     "winCondition",
+    "loseCondition",
     "orbitMode",
-    "clarityWinThreshold",
-    "sessionLengthSeconds",
-    "maxWrongGuesses"
+    "clarityConfig"
   ],
   "properties": {
-    "gameId": { "type": "string" },
     "title": { "type": "string" },
-    "correctAnswer": { "type": "string", "minLength": 1 },
-    "guessMode": { "type": "string", "enum": ["text", "multi_choice"] },
-    "choices": {
+    "genre": {
+      "type": "string",
+      "const": "angle_identification"
+    },
+    "targetLabel": { "type": "string" },
+    "synonyms": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "normal", "hard"]
+    },
+    "platform": {
+      "type": "string",
+      "enum": ["desktop_web", "mobile_web", "both"]
+    },
+    "durationSeconds": { "type": "number", "minimum": 10 },
+    "coreLoop": {
       "type": "array",
       "items": { "type": "string" },
-      "minItems": 2,
-      "maxItems": 6
+      "minItems": 3
+    },
+    "playerVerbs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["orbit", "zoom", "guess", "hint", "reset"]
+      }
+    },
+    "orbitMode": {
+      "type": "string",
+      "enum": ["camera_orbit", "splat_rotate"]
+    },
+    "clarityConfig": {
+      "type": "object",
+      "required": ["winThreshold"],
+      "properties": {
+        "winThreshold": { "type": "number", "minimum": 0.5, "maximum": 1 },
+        "hintBoost": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "maxHints": { "type": "number", "minimum": 0 }
+      }
+    },
+    "winCondition": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["correct_guess", "clarity_and_confirm", "either"]
+        },
+        "allowFuzzyMatch": { "type": "boolean" }
+      }
+    },
+    "loseCondition": {
+      "type": "object",
+      "properties": {
+        "timerSeconds": { "type": "number" },
+        "maxWrongGuesses": { "type": "number", "minimum": 1 },
+        "rotationBudgetDegrees": { "type": "number", "minimum": 0 }
+      }
+    },
+    "guessMode": {
+      "type": "string",
+      "enum": ["text", "multiple_choice", "hybrid"]
     },
     "distractors": {
       "type": "array",
       "items": { "type": "string" }
     },
-    "winCondition": {
+    "fallbackMode": {
       "type": "string",
-      "enum": ["correct_guess", "clarity_confirm", "clarity_reveal_then_guess"]
+      "enum": ["angle_orbit", "gradual_reveal"]
     },
-    "failConditions": {
+    "acceptanceTests": {
       "type": "array",
-      "items": {
-        "type": "string",
-        "enum": ["timeout", "max_wrong_guesses", "rotation_budget", "forfeit"]
-      }
-    },
-    "orbitMode": { "type": "string", "enum": ["orbit_camera", "rotate_splat"] },
-    "clarityWinThreshold": { "type": "number", "minimum": 0.5, "maximum": 1 },
-    "sessionLengthSeconds": { "type": "number", "minimum": 15, "maximum": 600 },
-    "maxWrongGuesses": { "type": "number", "minimum": 1, "maximum": 10 },
-    "enableRotationBudget": { "type": "boolean" },
-    "rotationBudgetRadians": { "type": "number", "minimum": 3.14 },
-    "hintCount": { "type": "number", "minimum": 0, "maximum": 5 },
-    "targetPlatform": { "type": "string", "enum": ["mobile_web", "desktop_web", "both"] },
-    "recommendedMode": { "type": "string", "enum": ["angle_orbit", "multi_choice_reveal"] },
-    "metadataRef": { "type": "string" },
-    "clarityCurveRef": { "type": "string" }
+      "items": { "type": "string" }
+    }
   }
 }

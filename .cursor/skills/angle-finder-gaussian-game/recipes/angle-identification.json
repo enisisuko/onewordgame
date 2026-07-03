@@ -1,56 +1,117 @@
 {
-  "id": "angle-identification",
-  "description": "Find the best viewing angle to identify a rough single-view Gaussian subject",
-  "requiredInputs": [
-    "user image",
-    "correct answer label",
-    "fast gaussian api config"
+  "recipeId": "angle-identification",
+  "version": "1.0.0",
+  "description": "Default recipe: orbit a rough Gaussian splat, find the canonical viewing angle, identify the object.",
+  "genre": "angle_identification",
+  "defaultDifficulty": "normal",
+  "defaultPlatform": "mobile_web",
+  "pipeline": [
+    "parse game-intent from user image + target label",
+    "request_fast_gaussian_api.py",
+    "build_clarity_curve.py",
+    "evaluate angle-feasibility.json",
+    "emit game-spec.json from this recipe template",
+    "emit ui-plan.json",
+    "implement PlayCanvas runtime",
+    "fill BUILD_REPORT.md"
   ],
-  "requiredApiFields": [
-    "sog_url",
-    "metadata.source_camera",
-    "metadata.centroid",
-    "metadata.bounds"
-  ],
-  "coreMechanics": [
-    "orbit_camera_or_rotate_splat",
-    "clarity_score_vs_angle",
-    "visual_degradation_off_peak",
-    "guess_or_confirm_identification"
-  ],
-  "optionalMechanics": [
-    "timer",
-    "rotation_budget",
-    "hint_system",
-    "zoom"
-  ],
-  "winConditions": [
-    "correct_guess",
-    "clarity_confirm",
-    "clarity_reveal_then_guess"
-  ],
-  "failConditions": [
-    "timeout",
-    "max_wrong_guesses",
-    "rotation_budget"
-  ],
-  "recommendedCameraMode": "orbit_camera",
-  "recommendedPlatform": "mobile_web",
-  "fallbackMode": "multi_choice_reveal",
-  "fallbackTriggers": [
-    "symmetryRisk > 0.7",
-    "missing source_camera",
-    "angle-feasibility.suitable == false"
-  ],
-  "mandatoryTests": [
-    "clarity peaks at source camera azimuth",
-    "off-angle clarity below 0.35 at 90deg offset",
-    "correct guess triggers win state",
-    "third wrong guess triggers loss",
-    "timer expiry triggers loss",
-    "restart resets angle timer and guesses",
-    "symmetric mock case degrades to multi_choice"
-  ],
-  "playcanvasNotes": "Orbit-only; no FPS billboard pick. Touch drag on canvas. See references/playcanvas-angle-game-pattern.md.",
-  "distinctFrom": "labeled-gaussian-game-generator — no semantic scene graph required"
+  "gameSpecTemplate": {
+    "title": "Find the Angle",
+    "genre": "angle_identification",
+    "difficulty": "normal",
+    "platform": "mobile_web",
+    "durationSeconds": 60,
+    "coreLoop": [
+      "Player sees a blurry rough Gaussian from an off-angle starting pose",
+      "Player drags to orbit camera around the splat centroid",
+      "Clarity increases as viewing angle approaches the API canonical camera",
+      "Player submits a guess when confident or clarity threshold is met",
+      "Correct identification wins; wrong guesses or timeout loses"
+    ],
+    "playerVerbs": ["orbit", "zoom", "guess", "hint", "reset"],
+    "orbitMode": "camera_orbit",
+    "clarityConfig": {
+      "winThreshold": 0.85,
+      "hintBoost": 0.25,
+      "maxHints": 2
+    },
+    "winCondition": {
+      "type": "either",
+      "allowFuzzyMatch": true
+    },
+    "loseCondition": {
+      "timerSeconds": 60,
+      "maxWrongGuesses": 3,
+      "rotationBudgetDegrees": 0
+    },
+    "guessMode": "multiple_choice",
+    "fallbackMode": "angle_orbit",
+    "acceptanceTests": [
+      "Orbit drag changes clarity monotonically toward peak",
+      "Correct guess at clarity >= 0.5 triggers win",
+      "Third wrong guess triggers loss",
+      "Timer expiry triggers loss",
+      "Reset restores initial off-angle pose",
+      "Touch orbit works without mouse on mobile viewport"
+    ]
+  },
+  "uiPlanTemplate": {
+    "layout": "mobile_portrait",
+    "elements": {
+      "clarityMeter": {
+        "type": "progress_bar",
+        "position": "bottom_above_guess",
+        "showNumeric": false,
+        "thresholdMarker": 0.85
+      },
+      "guessPanel": {
+        "type": "multiple_choice",
+        "choiceCount": 4,
+        "position": "bottom_sheet"
+      },
+      "compassOrOrbitHint": {
+        "type": "subtle_arrow",
+        "enabledOnEasyOnly": true
+      },
+      "hintButton": {
+        "position": "top_right",
+        "maxUses": 2
+      },
+      "timer": {
+        "position": "top_center",
+        "format": "mm:ss"
+      },
+      "resetButton": {
+        "position": "top_left"
+      }
+    }
+  },
+  "difficultyOverrides": {
+    "easy": {
+      "clarityConfig": { "winThreshold": 0.75, "maxHints": 3 },
+      "loseCondition": { "maxWrongGuesses": 5, "timerSeconds": 90 },
+      "startAngleOffset": { "yawDegrees": 60, "pitchDegrees": 20 }
+    },
+    "hard": {
+      "clarityConfig": { "winThreshold": 0.9, "maxHints": 1 },
+      "loseCondition": { "maxWrongGuesses": 2, "timerSeconds": 45, "rotationBudgetDegrees": 720 },
+      "startAngleOffset": { "yawDegrees": 150, "pitchDegrees": 35 }
+    }
+  },
+  "fallbackGradualReveal": {
+    "trigger": "angle-feasibility.suitable == false",
+    "gameSpecPatch": {
+      "fallbackMode": "gradual_reveal",
+      "coreLoop": [
+        "Clarity rises over time and on each guess attempt instead of angle",
+        "Player selects from multiple choices",
+        "Correct choice wins"
+      ],
+      "playerVerbs": ["guess", "hint"]
+    },
+    "uiPlanPatch": {
+      "compassOrOrbitHint": { "enabled": false },
+      "clarityMeter": { "label": "Reveal progress" }
+    }
+  }
 }

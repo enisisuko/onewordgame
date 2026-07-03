@@ -3,11 +3,36 @@
   "$id": "gaussian-metadata.schema.json",
   "title": "GaussianMetadata",
   "type": "object",
-  "required": ["sceneId", "centroid", "bounds", "sourceCamera"],
+  "required": [
+    "sceneId",
+    "qualityTier",
+    "centroid",
+    "bounds"
+  ],
   "properties": {
     "sceneId": { "type": "string" },
-    "sogUrl": { "type": "string" },
-    "plyUrl": { "type": "string" },
+    "qualityTier": {
+      "type": "string",
+      "enum": ["fast_rough", "standard", "high"]
+    },
+    "sourceCamera": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "target": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "fovDegrees": { "type": "number" }
+      }
+    },
     "centroid": {
       "type": "array",
       "items": { "type": "number" },
@@ -18,25 +43,38 @@
       "type": "object",
       "required": ["min", "max"],
       "properties": {
-        "min": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-        "max": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+        "min": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "max": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        }
       }
     },
-    "sourceCamera": {
+    "canonicalYawDegrees": { "type": "number" },
+    "canonicalPitchDegrees": { "type": "number" },
+    "reconstructionConfidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "viewDependenceScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "assetUrls": {
       "type": "object",
-      "required": ["position", "target"],
       "properties": {
-        "position": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-        "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-        "fov": { "type": "number", "minimum": 10, "maximum": 120 },
-        "azimuthDeg": { "type": "number" },
-        "elevationDeg": { "type": "number" }
+        "sog": { "type": "string" },
+        "ply": { "type": "string" }
       }
-    },
-    "subjectLabel": { "type": "string" },
-    "viewQuality": { "type": "string", "enum": ["rough", "medium", "high"] },
-    "singleViewConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
-    "inferredCamera": { "type": "boolean" },
-    "pipeline": { "type": "string", "enum": ["fast", "full"] }
+    }
   }
 }
