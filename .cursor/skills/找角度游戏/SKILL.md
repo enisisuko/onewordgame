@@ -1,6 +1,6 @@
 ---
 name: 找角度游戏
-description: 找角度游戏 / Angle Finder Game — 从粗糙单视角 Gaussian 生成可玩的「找最佳观察角度」识别游戏。图片上传 → 公司 Fast Gaussian API → 环绕相机 → 清晰度揭示 → 猜测 → 胜负判定。Generate playable find-the-best-viewing-angle identification game from rough single-view Gaussian.
+description: 找角度游戏 / Angle Finder Game — 从粗糙单视角 Gaussian 生成可玩的「找最佳观察角度」识别游戏。默认在 PlayCanvas 中运行；图片上传 → Fast Gaussian API → orbit 相机 → 清晰度揭示 → 猜测 → 胜负。
 ---
 
 # 找角度游戏（Angle Finder Game）
@@ -22,7 +22,7 @@ description: 找角度游戏 / Angle Finder Game — 从粗糙单视角 Gaussian
 
 ## When Not to Use
 
-- 完整 labeled splat 场景 + 多机制玩法（收集、逃生、钓鱼等）→ 用 `labeled-gaussian-game-generator`
+- 完整 labeled splat 场景 + 多机制玩法 → 用 `labeled-gaussian-game-generator`
 - 用户需要自由行走、语义标签驱动的复杂交互
 - 用户只要技术预览、无游戏目标
 
@@ -35,6 +35,59 @@ description: 找角度游戏 / Angle Finder Game — 从粗糙单视角 Gaussian
 | Fast Gaussian API 配置 | ✓ | 环境变量或本地 config JSON |
 | API 返回资产 | ✓ | sog/ply、splat URL、metadata（含 source camera） |
 
+## Playable Runtime（默认：PlayCanvas）
+
+**主运行时在 PlayCanvas**，不是 standalone HTML。
+
+| 项 | 值 |
+|----|-----|
+| 本地脚本 | `C:\WORKS\playcanvas\scripts\angle-finder\` |
+| Project | **1557749** |
+| Scene | **2540280** |
+| Launch | https://playcanvas.com/editor/scene/2540280 |
+
+```bash
+cd C:\WORKS\playcanvas
+node scripts/upload-angle-finder.mjs   # 需 .env PLAYCANVAS_API_TOKEN
+```
+
+架构与测试清单见 [`references/playcanvas-angle-game-pattern.md`](references/playcanvas-angle-game-pattern.md)。
+
+### PlayCanvas 脚本
+
+```text
+scripts/angle-finder/
+├── angle-orbit-camera.js    # orbit + touch/mouse
+├── clarity-controller.js      # angle → clarity → GSplat LOD/fog
+├── angle-game-manager.js      # 状态机、计时、胜负
+├── angle-guess-ui.js          # Canvas2D 多选 UI
+├── gsplat-loader.js           # .sog / placeholder
+└── data/
+    ├── game-spec.json
+    ├── gaussian-metadata.json
+    └── clarity-curve.json
+```
+
+## Pipeline Workflow
+
+```text
+用户图片 → prepare_image_upload.py → request_fast_gaussian_api.py
+  → build_clarity_curve.py → game-spec.json + metadata
+  → 更新 scripts/angle-finder/data/*.json
+  → upload-angle-finder.mjs → PlayCanvas Launch
+```
+
+## Dev Fallback（仅调试）
+
+`output-angle-game/` 是 Three.js 本地原型，**不是交付运行时**：
+
+```bash
+cd output-angle-game
+python -m http.server 8080
+```
+
+用于 API 契约、clarity 曲线、UI 流程的快速迭代；正式 demo 走 PlayCanvas。
+
 ## Image Input & Upload
 
 ```bash
@@ -45,13 +98,7 @@ python .cursor/skills/找角度游戏/scripts/build_clarity_curve.py output-angl
   --output output-angle-game/generated/clarity-curve.json
 ```
 
-## Pipeline Workflow
-
-```text
-用户图片 → prepare_image_upload.py → request_fast_gaussian_api.py
-  → build_clarity_curve.py → game-spec.json
-  → output-angle-game/ (index.html + js/) → 本地 serve 测试
-```
+生成后复制 JSON 到 `C:\WORKS\playcanvas\scripts\angle-finder\data\` 并 re-upload。
 
 ## Core Game Loop
 
@@ -59,39 +106,11 @@ python .cursor/skills/找角度游戏/scripts/build_clarity_curve.py output-angl
 加载粗糙 splat（默认 off-angle，模糊/稀疏）
   → 玩家 orbit / 拖拽旋转
   → clarity score 随视角变化（峰值 = sourceCamera）
-  → 视觉反馈：离峰模糊、噪声、密度衰减；近峰锐化揭示
+  → 视觉反馈：LOD/fog/密度衰减；近峰锐化揭示
   → 玩家提交猜测 → 胜利 / 失败 / 重试
 ```
 
-## Playable Runtime
-
-可运行原型位于 `output-angle-game/`：
-
-```bash
-cd output-angle-game
-python -m http.server 8080
-# 打开 http://localhost:8080
-```
-
-文件结构：
-
-```text
-output-angle-game/
-├── index.html
-├── js/
-│   ├── main.js
-│   ├── OrbitCamera.js
-│   ├── ClaritySystem.js
-│   ├── GuessUI.js
-│   └── GaussianLoader.js
-├── assets/
-│   └── gaussian-metadata.json
-└── generated/
-    ├── clarity-curve.json
-    └── game-spec.json
-```
-
-## Scripts
+## Scripts（Skill 工具）
 
 | 脚本 | 用途 |
 |------|------|
@@ -110,6 +129,7 @@ output-angle-game/
 
 | 维度 | 找角度游戏 | labeled-gaussian-game-generator |
 |------|-----------|--------------------------------|
+| 运行时 | **PlayCanvas orbit** | PlayCanvas FPS + billboards |
 | 输入质量 | 粗糙单视角（预期） | 较完整 labeled splat |
 | 核心循环 | 找角度 → 识别 | 语义标签 → 多机制玩法 |
 | 相机 | orbit / 旋转 splat | FPS / 固定视角行走 |

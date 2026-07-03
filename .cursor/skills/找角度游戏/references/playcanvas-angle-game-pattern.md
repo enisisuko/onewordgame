@@ -1,126 +1,110 @@
-# PlayCanvas Angle Game Pattern
+# PlayCanvas Angle Game Pattern（主运行时）
 
-Minimal PlayCanvas architecture for **Find the Angle** identification games. Complements sibling skill UI patterns without requiring semantic billboards.
+**找角度游戏的默认运行时是 PlayCanvas，不是 standalone HTML。**  
+本地脚本源：`C:\WORKS\playcanvas\scripts\angle-finder\`
+
+## 项目 / 场景
+
+| 项 | 值 |
+|----|-----|
+| Project ID | **1557749**（找角度专用） |
+| Scene ID | **2540280** |
+| Branch ID | `a71cf48d-4898-4899-9afe-ac50b5739a97` |
+| Launch | https://playcanvas.com/editor/scene/2540280 |
+
+> 赌场副本 1551971 / scene 2532760 是另一套 cloud-patched 项目，不要混用 upload 脚本。
 
 ## Scene Hierarchy
 
 ```text
-Application
-├── Camera                    (script: orbit-camera.js)
-├── DirectionalLight
-├── SplatRoot
-│   └── GaussianSplat         (sog loader component)
-├── ClarityFX                 (script: clarity-controller.js, optional posteffect)
-├── GameManager               (script: angle-game-manager.js)
-└── 2D Screen
-    ├── ClarityBar
-    ├── CompassWidget
-    ├── GuessPanel
-    ├── TimerLabel
-    └── ResultOverlay
+Root
+├── Camera                 (angleOrbitCamera — 禁用 cameraControls)
+├── GaussianSplat          (gsplat + gsplatLoader + clarityController)
+└── GameManager            (uiLayoutBoot + angleGameManager + angleGuessUi)
 ```
 
-## angle-game-manager.js State Machine
+## 脚本与 Asset ID
+
+| 脚本 | Asset ID | 挂载实体 |
+|------|----------|----------|
+| ui-layout.js | 297185092 | GameManager (uiLayoutBoot) |
+| angle-orbit-camera.js | 297185093 | Camera |
+| clarity-controller.js | 297185094 | GaussianSplat |
+| gsplat-loader.js | 297185095 | GaussianSplat |
+| angle-game-manager.js | 297185096 | GameManager |
+| angle-guess-ui.js | 297185097 | GameManager |
+| gaussian-metadata.json | 297185098 | loader + clarity + manager |
+| game-spec.json | 297185099 | manager |
+| clarity-curve.json | 297185100 | loader + clarity |
+
+## 上传
+
+```bash
+cd C:\WORKS\playcanvas
+# .env 需 PLAYCANVAS_API_TOKEN
+node scripts/upload-angle-finder.mjs
+```
+
+优先 REST API；MCP（port 52001）用于实体/属性微调。
+
+## angle-game-manager 状态机
 
 ```text
-loading → intro → playing → won | lost → restarting → intro
+loading → intro → playing → won | lost → restarting → playing
 ```
 
-| State | Entry actions |
-|-------|-----------------|
-| loading | Fetch sog, parse clarity-curve.json |
-| intro | Show title, correct answer hidden |
-| playing | Enable orbit, start timer |
-| won | Show answer, confetti optional |
-| lost | Show answer, retry button |
-| restarting | Reset camera, guesses, timer |
+| 事件 | 说明 |
+|------|------|
+| `angle:state` / `game:state` | 状态广播 |
+| `angle:orbit` | 相机角度变化（clarity 监听） |
+| `clarity:changed` | 清晰度更新 → UI 进度条 |
+| `angle:guess_submit` | 多选答案 |
+| `game:hint` | 提示 → clarity boost |
+| `game:timeout` | 超时失败 |
+| `angle:restart_request` | 重来 |
 
-### Events
+## Orbit Camera
 
-- `game:start` — intro → playing
-- `game:guess` — payload `{ text }` → check win/fail
-- `game:hint` — decrement hint budget
-- `game:clarity_confirm` — player taps "I know what this is"
-- `clarity:changed` — update UI meter
-- `game:timeout` — playing → lost
+- **仅 orbit**，禁用 `cameraControls`
+- 鼠标左键 / 单指触摸拖拽
+- `UiLayout.isPointerOverCanvasUI` 时忽略（不抢 UI 点击）
+- 属性：`pivot` vec3、`startYawDeg`、`startPitchDeg`、`radius`
 
-## Guess UI Modes
+## Clarity
 
-### Text Input (`guessMode: "text"`)
+- 视角向量 vs `sourceCamera` 真值方向 → Gaussian 峰
+- 驱动：GSplat LOD、`scene fog`、placeholder scale
+- 公式见 `references/clarity-model.md`
 
-- Single line input + submit button
-- Normalize: trim, lowercase, optional Levenshtein ≤ 1 for typos
+## Guess UI
 
-### Multiple Choice (`guessMode: "multi_choice"`)
+- Canvas2D + `UiLayout` / `UiTheme`（竖屏 720×1280）
+- 多选题、计时器、清晰度条、提示/重置/再来一局
+- 底部 1/3 拇指区放选项
 
-- 4 buttons from `game-spec.json` → `choices[]`
-- Used in fallback when symmetry risk high
+## GSplat 加载
 
-## Clarity Bar
+1. 有 `gsplatAsset` → 挂 `gsplat` component
+2. 无资产 → `gsplatLoader` 生成 placeholder 点云（dry-run）
+3. API 返回 `.sog` 后上传到 PlayCanvas 并赋给 `gsplatAsset`
 
-- Horizontal fill 0–100% bound to clarity
-- Color gradient: `#446` → `#4f4` at threshold
-- Pulse animation when crossing `clarityWinThreshold`
+## 测试清单
 
-## Timer
+1. Launch → 拖拽环绕，清晰度条上升
+2. 转到峰值附近 → 猜「咖啡杯」→ 胜利
+3. 连续错 3 次 → 失败
+4. 等计时器归零 → 失败
+5. 手机竖屏 / 触摸 orbit 正常
 
-```javascript
-this._timeLeft -= dt;
-if (this._timeLeft <= 0) this.app.fire('game:timeout');
-```
+## output-angle-game/（仅开发回退）
 
-Default 90s mobile; show MM:SS.
+`output-angle-game/` 是 Three.js 本地原型，用于 API/曲线调试。**不是交付运行时。**  
+需要快速验逻辑时用 `python -m http.server`，正式 demo 走 PlayCanvas Launch。
 
-## Loading Gaussian Splat
+## 与 labeled-gaussian-game-generator 区别
 
-Prefer company sog format from API `sog_url`:
-
-1. Download to `assets/scene.sog` (or stream URL if CORS allows)
-2. Attach to splat component per project loader
-3. Center on `metadata.centroid`; scale to fit bounds
-
-If loader unavailable, placeholder sphere + BUILD_REPORT warning.
-
-## Touch (Loopit Mobile Partner)
-
-```javascript
-this.app.touch.on(pc.EVENT_TOUCHSTART, this._onTouchStart, this);
-// Only orbit if not over UI:
-if (UiLayout.isPointerOverCanvasUI(x, y)) return;
-```
-
-Partner requirements:
-
-- Portrait-first layout
-- Guess panel thumb-reachable bottom third
-- No right-click dependencies
-
-## Scripts to Generate
-
-| File | Responsibility |
-|------|----------------|
-| `orbit-camera.js` | Drag orbit, optional zoom |
-| `clarity-controller.js` | clarity → material/post |
-| `angle-game-manager.js` | State, timer, guesses, win/lose |
-| `clarity-meter-ui.js` | Bar + compass |
-| `guess-panel-ui.js` | Text or multi-choice |
-
-## MCP Upload Workflow
-
-If deploying to PlayCanvas hosted project:
-
-1. Prefer API token upload over MCP when token available
-2. Use playcanvas MCP for asset/scene sync if no token
-3. Never embed API keys in uploaded scripts
-
-## Testing in Editor
-
-1. Play mode: drag to orbit, verify clarity peaks at expected angle
-2. Submit wrong guess 3× → lost
-3. Submit correct → won
-4. Restart resets all state
-5. Resize to mobile aspect → UI still usable
-
-## Difference from cloud-patched Explorer
-
-Explorer (`labeled-gaussian-game-generator`) uses FPS + billboard ray-pick. Angle game uses **orbit only** — no `interactDistance`, no `BillboardUi.pickAll`.
+| 维度 | 找角度 | labeled explorer |
+|------|--------|------------------|
+| 相机 | orbit only | FPS + billboard pick |
+| 输入 | 拖拽环绕 | 行走 + 交互距离 |
+| UI | Canvas2D 猜题 | 世界 billboard |
