@@ -1,0 +1,41 @@
+{
+  "title": "找角度游戏",
+  "genre": "angle_identification",
+  "targetLabel": "咖啡杯",
+  "synonyms": ["杯子", "马克杯", "coffee cup"],
+  "difficulty": "normal",
+  "platform": "mobile_web",
+  "durationSeconds": 60,
+  "coreLoop": [
+    "玩家从模糊 off-angle 视角观察粗糙 Gaussian",
+    "拖拽环绕找到最佳观察角度",
+    "清晰度上升后从多选中猜出物体",
+    "答对胜利，错够或超时失败"
+  ],
+  "playerVerbs": ["orbit", "zoom", "guess", "hint", "reset"],
+  "orbitMode": "camera_orbit",
+  "clarityConfig": {
+    "winThreshold": 0.85,
+    "hintBoost": 0.25,
+    "maxHints": 2
+  },
+  "winCondition": {
+    "type": "either",
+    "allowFuzzyMatch": true
+  },
+  "loseCondition": {
+    "timerSeconds": 60,
+    "maxWrongGuesses": 3,
+    "rotationBudgetDegrees": 0
+  },
+  "guessMode": "multiple_choice",
+  "distractors": ["茶壶", "花瓶", "马克杯"],
+  "fallbackMode": "angle_orbit",
+  "acceptanceTests": [
+    "Orbit drag changes clarity toward peak",
+    "Correct guess triggers win",
+    "Third wrong guess triggers loss",
+    "Timer expiry triggers loss",
+    "Reset restores initial pose"
+  ]
+}

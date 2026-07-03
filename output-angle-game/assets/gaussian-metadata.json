@@ -1,0 +1,41 @@
+{
+  "sceneId": "dry_run_placeholder",
+  "qualityTier": "fast_rough",
+  "targetLabel": "咖啡杯",
+  "sogUrl": "",
+  "centroid": [
+    0.0,
+    0.5,
+    0.0
+  ],
+  "bounds": {
+    "min": [
+      -1.0,
+      0.0,
+      -1.0
+    ],
+    "max": [
+      1.0,
+      2.0,
+      1.0
+    ]
+  },
+  "sourceCamera": {
+    "position": [
+      0.0,
+      1.0,
+      3.0
+    ],
+    "target": [
+      0.0,
+      0.5,
+      0.0
+    ],
+    "fovDegrees": 60.0,
+    "azimuthDeg": 0.0,
+    "elevationDeg": 15.0
+  },
+  "viewDependenceScore": 0.8,
+  "pipeline": "fast",
+  "note": "dry-run mode"
+}

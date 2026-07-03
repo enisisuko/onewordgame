@@ -1,4 +1,4 @@
-"""Shared utilities for angle-finder-gaussian-game skill scripts."""
+"""Shared utilities for 找角度游戏 skill scripts."""
 from __future__ import annotations
 
 import json
