@@ -1,4 +1,4 @@
-# PlayCanvas MCP Workflow
+﻿# PlayCanvas MCP Workflow
 
 Documents editor automation for placing interactables and inspecting scenes. Complements REST upload for script assets.
 
@@ -7,8 +7,10 @@ Documents editor automation for placing interactables and inspecting scenes. Com
 | Requirement | Detail |
 |-------------|--------|
 | Cursor mode | **Agent** (MCP tools unavailable in Ask/read-only) |
-| `mcp.json` | PlayCanvas server entry (user `~/.cursor/mcp.json` example): |
-| | `"playcanvas"`: `npx tsx C:\WORKS\playcanvas\editor-mcp-server\src\server.ts` |
+| `mcp.json` | PlayCanvas server in user `~/.cursor/mcp.json` — **absolute paths required** (see [Troubleshooting](#troubleshooting-mcp-server-errored--err_module_not_found)): |
+| | `"command"`: `C:/Program Files/nodejs/node.exe` |
+| | `"args"`: `C:/WORKS/playcanvas/editor-mcp-server/node_modules/tsx/dist/cli.mjs`, then `.../src/server.ts` |
+| | `"cwd"`: `C:/WORKS/playcanvas/editor-mcp-server` (optional; Cursor may ignore on Windows) |
 | | `"env": { "PORT": "52001" }` |
 | MCP bridge | WebSocket on **port 52001** (`PORT` env) |
 | Editor | PlayCanvas Editor open on target project/scene |
@@ -16,7 +18,43 @@ Documents editor automation for placing interactables and inspecting scenes. Com
 
 **Windows port note:** Default `52000` may conflict with **MSI.CentralServer**; prefer **`52001`** (or higher) in `PORT` and match the extension/bridge config.
 
-### Failure modes (empty-window / no editor)
+## Troubleshooting: MCP server errored / ERR_MODULE_NOT_FOUND
+
+### Symptom
+
+Cursor shows **MCP server errored** for `playcanvas`, or Node logs:
+
+```text
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\18025\src\server.ts'
+```
+
+(or another path under your user profile instead of `C:\WORKS\playcanvas\editor-mcp-server\`)
+
+### Cause
+
+On **Windows**, Cursor may **not apply** the `cwd` field from `mcp.json`. Relative paths in `command` / `args` are then resolved from the wrong directory (often your home folder), so `src/server.ts` becomes `C:\Users\<you>\src\server.ts`.
+
+### Fix (match current `mcp.json`)
+
+Use **fully qualified paths** for everything that launches the server:
+
+| Field | Example |
+|-------|---------|
+| `command` | `C:/Program Files/nodejs/node.exe` |
+| `args[0]` | `C:/WORKS/playcanvas/editor-mcp-server/node_modules/tsx/dist/cli.mjs` |
+| `args[1]` | `C:/WORKS/playcanvas/editor-mcp-server/src/server.ts` |
+| `env.PORT` | `52001` (avoid MSI.CentralServer on default `52000`) |
+
+Keep `"cwd": "C:/WORKS/playcanvas/editor-mcp-server"` for documentation and tools that honor it; do **not** rely on `cwd` alone on Windows.
+
+Restart Cursor after editing `mcp.json`.
+
+### Do not use (stdio MCP)
+
+- **`npx tsx ...`** as the MCP `command` — extra process/wrapper can break stdio transport.
+- Spawning **`npx tsx`** or the **tsx `cli.mjs` wrapper** via **`execSync`** from helper scripts when you need a long-lived stdio MCP child — use the same absolute `node.exe` + `cli.mjs` + `server.ts` pattern in `mcp.json` instead.
+
+## Failure modes (empty-window / no editor)
 
 | Symptom | Cause | Fallback |
 |---------|-------|----------|
