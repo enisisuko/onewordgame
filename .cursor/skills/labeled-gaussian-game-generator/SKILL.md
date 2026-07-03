@@ -159,6 +159,138 @@ python scripts/score_mechanic_feasibility.py output-game/generated/scene-capabil
 python scripts/detect_mechanic_conflicts.py --playability limited_3d --mechanics pickup delivery free_movement
 ```
 
+## PlayCanvas Runtime
+
+当目标工程或模板使用 PlayCanvas（默认）时，运行时实现应对齐 `C:\WORKS\playcanvas\scripts\cloud-patched\`：
+
+- **FPS 探索**：`gameManager` + `character-controller` + `billboardUi` 射线交互
+- **竖屏 UI**：`UiLayout.createScreen` + `createCanvasPanel` + Canvas2D 绘制（720×1280）
+- **内置小游戏**：poker / pachinko / sleep（可选 shop 于 fishing 分支）
+
+生成物绑定语义标签时：每个可交互标签对应一个 **Billboard 实体**（`billboardUi` + `element`），`interactionType` 与 `GameManager.interactDistance`（默认 12）决定可达性。详见 `references/playcanvas-interaction-pattern.md`。
+
+## PlayCanvas MCP Connection
+
+编辑器内场景摆放优先 PlayCanvas MCP；**脚本上传优先 REST API**（`upload-cloud-patched.mjs` + `.env` token，勿提交密钥）。
+
+**前置条件**：
+
+1. Cursor **Agent 模式**
+2. `~/.cursor/mcp.json` 中 `playcanvas` 指向 `editor-mcp-server`（port **52000**）
+3. PlayCanvas Editor 打开目标 scene，Chrome 扩展点击 **CONNECT**
+
+**MCP 失败时**（如 empty-window 会话、未 CONNECT）：
+
+- 改本地 `scripts/cloud-patched/` 后 `node scripts/upload-cloud-patched.mjs`
+- 参考 `references/playcanvas-mcp-workflow.md` 中的 asset ID 与 project 1551971 / 1552576 对照
+- 实体坐标仍可从 `semantic-scene.json` 手写或通过 helper 脚本（`mcp-setup-world-markers.mjs`）批量创建
+
+## Interaction Range Placement
+
+从 `mechanic-bindings.json` / 语义图节点到场景实体：
+
+1. 取标签 3D 中心 + 高度偏移（约 1.5–2 m）
+2. 按 `references/label-mechanic-mapping.md` 与下表设 `interactionType`：
+
+| 语义类型示例 | interactionType |
+|-------------|-----------------|
+| table, casino_table | `poker` |
+| pachinko, slot_machine | `pachinko` |
+| bed, couch, rest_area | `sleep` |
+
+3. MCP：`list_entities` → `create_entities` → `add_components` / `add_script_component_script`（billboardUi）
+4. 校验：Launch 后准星/点击能在 `interactDistance` 内命中；HUD 底部出现 `CLICK · POKER` 等提示
+
+钓鱼类项目可改用 **WorldMarker  proximity**（`scripts/fishing/world-marker.js`），见 interaction pattern 文档「Alternative」节。
+
+## UI Minigame Integration
+
+模式机：`fps` | `poker` | `pachinko` | `sleep`（+ fishing 的 `shop`）。
+
+事件总线（`app.fire` / `app.on`）：
+
+- `game:enterPoker` / `game:enterPachinko` / `game:enterSleep`
+- `game:uiMode` — 当前模式字符串
+
+**能量 / 金币门控**：
+
+- 进入 poker、pachinko：消耗 **1 energy**（不足 → toast `ENERGY LOW`）
+- sleep：免费，完成后 `restoreEnergy(maxEnergy)`
+- 小游戏内下注：`spendGold` / `canAfford`（默认 initialGold 100，bet 5–100）
+
+实现新玩法时优先 **复用现有 mini-game 壳** + 换 Canvas2D 文案/规则，而非绕过 GameManager 直接改 mode。详见 `references/playcanvas-ui-minigame-pattern.md`。
+
+## PlayCanvas Runtime
+
+当目标工程使用 PlayCanvas（默认）时，运行时实现应对齐 `C:\WORKS\playcanvas\scripts\cloud-patched\` 模式，而非从零写通用 Three.js 循环。
+
+| 模块 | 脚本 | 职责 |
+|------|------|------|
+| 模式 / 经济 | `gameManager` | FPS 探索、`interactDistance`、energy/gold、模式机 |
+| 世界交互 | `billboardUi` | 射线拾取 + `interactionType` → 小游戏 |
+| UI 基建 | `ui-layout.js` | 720×1280 竖屏 Canvas、`createScreen` / `createCanvasPanel` |
+| 小游戏 | `pokerGame`, `pachinkoGame`, `sleepTransition` | 监听 `game:enter*` 事件 |
+| 可选 | `shopGame` | 钓鱼项目 `game:enterShop` |
+
+生成 `output-game/` 时：
+
+1. 复用机制注册表与事件总线命名（`game:uiMode`, `game:enterPoker` 等）
+2. 语义锚点 → `billboardUi` 实体（见 Interaction Range Placement）
+3. 小游戏 UI 用 `UiLayout` 面板模式（见 UI Minigame Integration）
+4. 详细契约见 `references/playcanvas-interaction-pattern.md` 与 `references/playcanvas-ui-minigame-pattern.md`
+
+## PlayCanvas MCP Connection
+
+编辑器内放置实体、挂脚本组件时使用 PlayCanvas MCP；**脚本文件上传优先 REST API**。
+
+**前置条件**
+
+- Cursor **Agent** 模式
+- `~/.cursor/mcp.json` 中 `playcanvas` 服务（`tsx` 启动 `editor-mcp-server`，`PORT=52000`）
+- PlayCanvas Editor 打开正确 scene，Chrome 扩展 **CONNECT**
+
+**失败回退**
+
+| 失败 | 处理 |
+|------|------|
+| MCP 不可用（如无 playcanvas 服务） | 用手动编辑器操作 + `upload-cloud-patched.mjs` |
+| `list_entities` 超时 | 确认扩展 CONNECT、scene URL 与 project ID 一致 |
+| empty-window 会话无 MCP | 在用户主 `mcp.json` 配置 playcanvas 后重启；或仅走 REST + 本地 `cloud-patched` 参考 |
+
+完整工具列表与工作流：`references/playcanvas-mcp-workflow.md`  
+项目 ID：**1551971**（主场景 casino）、**1552576**（副本 / 钓鱼）。
+
+## Interaction Range Placement
+
+将 `mechanic-bindings.json` 中的可交互语义对象落到 PlayCanvas 场景：
+
+1. 取标签 `position` / 包围盒中心作为 billboard 世界坐标
+2. 设置 `billboardUi.interactionType`（`poker` | `pachinko` | `sleep`）与 `labelText`
+3. 保证与玩家站立点距离 ≤ `GameManager.interactDistance`（默认 **12**）
+4. MCP：`list_entities` → `list_assets` → `create_entities` → `add_components` + `add_script_component_script`
+5. 钓鱼类场景可改用 `worldMarker` 邻近触发（`scripts/fishing/`），见 interaction pattern 文档
+
+语义标签映射示例：table→`poker`，bed/sofa→`sleep`，arcade/slot→`pachinko`。
+
+## UI Minigame Integration
+
+小游戏不直接由 billboard 打开 UI，而由 **GameManager 事件**驱动：
+
+```text
+billboard pick → startPoker|startPachinko|startSleep
+  → energy 检查（sleep 除外）→ lockPlayer → setMode
+  → app.fire('game:enterPoker' | 'game:enterPachinko' | 'game:enterSleep')
+  → *Game 启用 UiLayout Screen + Canvas 面板
+```
+
+实现新 PlayCanvas 小游戏时：
+
+- Screen priority 高于 HUD（110+），`useInput: true` 的面板用 `UiLayout.bindPanelInput`
+- 退出时 `gm.setMode('fps')` + `gm.unlockPlayer()`
+- 投注类玩法用 `gm.spendGold` / `gm.addGold`；进入消耗用 `gm.spendEnergy(1)`
+
+详见 `references/playcanvas-ui-minigame-pattern.md`。
+
 ## Game Generation
 
 1. 检查项目技术栈（默认 PlayCanvas 或项目现有运行时）
@@ -253,3 +385,9 @@ python scripts/route_game_genre.py output-game/generated/game-intent.json --outp
 - `references/genre-routing.md`
 - `references/mechanic-primitives.md`
 - `references/mechanic-conflicts.md`
+- `references/playcanvas-interaction-pattern.md` — `interactDistance`, billboard ray pick, label→interactionType
+- `references/playcanvas-ui-minigame-pattern.md` — mode machine, event bus, UiLayout 小游戏
+- `references/playcanvas-mcp-workflow.md` — MCP 前置、22 工具、REST 上传回退
+- `references/playcanvas-interaction-pattern.md` — interactDistance、BillboardUi 射线、标签→interactionType、WorldMarker 备选
+- `references/playcanvas-ui-minigame-pattern.md` — 模式机、事件总线、UiLayout 面板、能量/金币门控
+- `references/playcanvas-mcp-workflow.md` — MCP 前置、23 工具、摆放流程、REST 上传与 project ID

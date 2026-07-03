@@ -7,7 +7,8 @@
   "optionalSceneEvidence": [
     "containers",
     "shelves",
-    "tables"
+    "tables",
+    "billboardUi interactables (PlayCanvas: table→poker optional side activity)"
   ],
   "requiredMechanics": [
     "movement_or_pointer_navigation",
@@ -28,5 +29,6 @@
   "fallbackArchetypes": [
     "hidden_object",
     "screen_space_collection"
-  ]
+  ],
+  "playcanvasNotes": "Billboard placement within interactDistance (default 12); see references/playcanvas-interaction-pattern.md."
 }

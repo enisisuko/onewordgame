@@ -7,7 +7,8 @@
   "optionalSceneEvidence": [
     "keys",
     "locks",
-    "hazards"
+    "hazards",
+    "doors with billboardUi or WorldMarker exit trigger (PlayCanvas)"
   ],
   "requiredMechanics": [
     "movement",
@@ -26,5 +27,6 @@
   "fallbackArchetypes": [
     "timed_escape",
     "screen_space_escape"
-  ]
+  ],
+  "playcanvasNotes": "Exit triggers via billboardUi ray pick or worldMarker proximity; see references/playcanvas-interaction-pattern.md."
 }
