@@ -9,10 +9,12 @@ Documents editor automation for placing interactables and inspecting scenes. Com
 | Cursor mode | **Agent** (MCP tools unavailable in Ask/read-only) |
 | `mcp.json` | PlayCanvas server entry (user `~/.cursor/mcp.json` example): |
 | | `"playcanvas"`: `npx tsx C:\WORKS\playcanvas\editor-mcp-server\src\server.ts` |
-| | `"env": { "PORT": "52000" }` |
-| MCP bridge | WebSocket on **port 52000** (`PORT` env) |
+| | `"env": { "PORT": "52001" }` |
+| MCP bridge | WebSocket on **port 52001** (`PORT` env) |
 | Editor | PlayCanvas Editor open on target project/scene |
 | Extension | PlayCanvas MCP Chrome extension → **CONNECT** (bridges editor ↔ WS) |
+
+**Windows port note:** Default `52000` may conflict with **MSI.CentralServer**; prefer **`52001`** (or higher) in `PORT` and match the extension/bridge config.
 
 ### Failure modes (empty-window / no editor)
 
@@ -142,7 +144,7 @@ Upload order matters: `ui-layout.js` bootstrap first, then `game-manager.js`, mi
 ## Agent checklist
 
 - [ ] Editor open on correct scene URL
-- [ ] MCP extension CONNECT (port 52000 listening)
+- [ ] MCP extension CONNECT (port 52001 listening)
 - [ ] `list_entities` succeeds before `create_entities`
 - [ ] Script changes pushed via REST, not MCP `set_script_text`, unless hotfixing in editor only
 - [ ] No tokens or `.env` in git commits
