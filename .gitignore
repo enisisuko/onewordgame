@@ -15,10 +15,6 @@ env/
 credentials.json
 secrets.*
 gaussian-api.config.json
-
-# Angle-finder skill local outputs (may contain signed URLs)
-output-angle-game/assets/api-response.json
-gaussian-api.config.json
 .gaussian-api.config.json
 
 # Angle-finder skill local outputs (may contain signed URLs)
