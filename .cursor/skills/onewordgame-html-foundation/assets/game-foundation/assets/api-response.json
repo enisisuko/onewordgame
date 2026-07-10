@@ -1,0 +1,14 @@
+{
+  "status": "completed",
+  "scene_id": "dry_run_placeholder",
+  "outputs": {
+    "sog_url": "",
+    "metadata_url": "",
+    "ply_url": "",
+    "thumbnail_url": ""
+  },
+  "dry_run": true,
+  "placeholder": true,
+  "source_image": "output-angle-game/input/source-image.png",
+  "note": "dry-run mode"
+}

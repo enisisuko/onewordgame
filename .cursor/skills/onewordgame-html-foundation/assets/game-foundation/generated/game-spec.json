@@ -1,0 +1,36 @@
+{
+  "title": "水族馆钓鱼",
+  "genre": "explore_fishing_minigame",
+  "targetLabel": "海岸钓鱼平台",
+  "difficulty": "normal",
+  "platform": "mobile_web",
+  "durationSeconds": 0,
+  "coreLoop": [
+    "海岸高斯场景中自由走动探索",
+    "走入 WM_Fishing 路标范围触发钓鱼小游戏",
+    "抛竿 → 等待咬钩 → 提竿 → 搏斗收线",
+    "离开钓点返回探索模式"
+  ],
+  "playerVerbs": ["walk", "look", "enter_trigger", "cast", "hook", "reel", "exit"],
+  "exploreMode": "first_person_walk",
+  "fishingConfig": {
+    "biteWaitMin": 2,
+    "biteWaitMax": 6,
+    "hookAlertSec": 2.5,
+    "fightDurationMax": 35
+  },
+  "worldMarkers": [
+    { "id": "WM_Fishing", "type": "fishing", "label": "钓鱼平台" },
+    { "id": "WM_Dock", "type": "dock", "label": "木质码头" },
+    { "id": "WM_Shore", "type": "shore", "label": "浅水区" }
+  ],
+  "splatAsset": "assets/coastal-fishing-vista.sog",
+  "splatSource": "Coastal Fishing Platform Vista.sog",
+  "acceptanceTests": [
+    "SOG splat loads right-side up via GaussianLoaderV2 X-flip",
+    "Desktop WASD + mouse look in explore mode",
+    "Mobile joystick + touch look in explore mode",
+    "Enter WM_Fishing opens fishing HUD; exit returns to explore",
+    "Fishing cast → wait → hook → fight → result loop completes"
+  ]
+}

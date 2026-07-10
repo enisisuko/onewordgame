@@ -1,0 +1,21 @@
+{
+  "sceneId": "coastal-fishing-vista",
+  "qualityTier": "labeled_splat",
+  "targetLabel": "海岸钓鱼平台",
+  "sogUrl": "assets/coastal-fishing-vista.sog",
+  "centroid": [0.0, 0.0, 0.0],
+  "bounds": {
+    "min": [-2.0, -1.0, -2.0],
+    "max": [2.0, 2.0, 2.0]
+  },
+  "sourceCamera": {
+    "position": [0.0, 1.2, 4.0],
+    "target": [0.0, 0.0, 0.0],
+    "fovDegrees": 60.0,
+    "azimuthDeg": 0.0,
+    "elevationDeg": 12.0
+  },
+  "viewDependenceScore": 0.5,
+  "pipeline": "manual_sog",
+  "note": "Coastal Fishing Platform Vista.sog — 水族馆钓鱼 demo"
+}

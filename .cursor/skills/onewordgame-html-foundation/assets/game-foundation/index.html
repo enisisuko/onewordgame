@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2312141a'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%234ecdc4'/%3E%3C/svg%3E" />
+  <title>水族馆钓鱼</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: "Segoe UI", "PingFang SC", system-ui, sans-serif;
+      background: #12141a; color: #e8f4f8;
+      touch-action: none;
+    }
+    body {
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    #phone-shell {
+      position: relative;
+      flex-shrink: 0;
+      width: fit-content;
+      max-width: calc(100vw - 32px);
+      padding: 10px 10px 14px;
+      border: 12px solid #222;
+      border-radius: 36px;
+      background: linear-gradient(165deg, #2a2a2e 0%, #1a1a1e 45%, #111114 100%);
+      box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    #phone-notch {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 22px;
+      border-radius: 0 0 14px 14px;
+      background: #0a0a0c;
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+      z-index: 300;
+      pointer-events: none;
+    }
+    #phone-screen {
+      position: relative;
+      width: min(390px, calc(90dvh * 390 / 844), calc(100vw - 56px));
+      height: min(844px, 90dvh);
+      aspect-ratio: 390 / 844;
+      margin-inline: auto;
+      overflow: hidden;
+      background: #061018;
+      border-radius: 24px;
+      box-shadow: inset 0 0 0 1px rgba(126, 232, 250, 0.08);
+      container-type: inline-size;
+    }
+    #game-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      touch-action: none;
+    }
+    #hud {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .hud-top {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 45;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: max(12px, env(safe-area-inset-top)) 12px 0;
+      pointer-events: none; gap: 8px;
+    }
+    .hud-status {
+      display: flex; flex-direction: column; align-items: flex-start;
+      min-width: 0; max-width: calc(100% - 104px); gap: 6px;
+    }
+    .hud-actions {
+      display: flex; align-items: flex-start; gap: 6px;
+      pointer-events: auto; flex-shrink: 0;
+    }
+    .hud-main {
+      position: absolute; left: 12px; right: 12px; top: 88px; bottom: 90px;
+      display: none; gap: 10px; align-items: stretch; min-height: 0;
+    }
+    .hud-bottom {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 10px 12px max(14px, env(safe-area-inset-bottom));
+      pointer-events: auto;
+      background: linear-gradient(0deg, rgba(4, 16, 28, 0.92) 0%, rgba(4, 16, 28, 0.55) 70%, transparent);
+    }
+    @media (max-width: 639px) {
+      .hud-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    }
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(12, 32, 48, 0.88);
+      border: 1px solid rgba(126, 232, 250, 0.25);
+      border-radius: 9px; padding: 6px 9px;
+      min-height: 32px;
+      font-size: 12px; line-height: 1.15;
+      white-space: nowrap; backdrop-filter: blur(10px);
+    }
+    #title-badge {
+      max-width: 136px; justify-content: flex-start;
+      overflow: hidden; text-overflow: ellipsis;
+      font-weight: 700; color: #7ee8fa;
+    }
+    #catch-count {
+      font-variant-numeric: tabular-nums;
+      color: #ffd166;
+      border-color: rgba(255, 209, 102, 0.28);
+      background: rgba(46, 34, 18, 0.72);
+    }
+    #dof-controls {
+      display: flex; align-items: flex-start; gap: 4px;
+      pointer-events: auto;
+    }
+    #btn-reset,
+    #btn-dof {
+      flex: 0 0 42px;
+      width: 42px; height: 42px; min-width: 42px; min-height: 42px;
+      padding: 0 !important;
+      border-radius: 12px;
+      position: relative;
+      background: rgba(9, 26, 40, 0.86);
+      border-color: rgba(180, 225, 235, 0.22);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+    }
+    #btn-reset { font-size: 20px; }
+    #btn-dof { font-size: 12px; font-weight: 800; }
+    #btn-dof.active {
+      border-color: rgba(93, 223, 138, 0.65);
+      color: #5ddf8a;
+    }
+    #btn-dof.active::after {
+      content: '';
+      position: absolute; right: 7px; top: 7px;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #5ddf8a;
+      box-shadow: 0 0 8px rgba(93, 223, 138, 0.8);
+    }
+    #explore-hint, #mobile-hint {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 11px; opacity: 0.78; pointer-events: none;
+      text-align: center; max-width: calc(100% - 32px); line-height: 1.35;
+      padding: 7px 11px; border-radius: 999px;
+      background: rgba(4, 16, 28, 0.58);
+      border: 1px solid rgba(126, 232, 250, 0.12);
+      backdrop-filter: blur(10px);
+      z-index: 34;
+    }
+    #explore-hint { top: auto; bottom: 136px; }
+    #mobile-hint { bottom: 92px; color: #7ee8fa; }
+    #explore-hint.hidden, #mobile-hint.hidden { display: none; }
+    body.mode-fishing #explore-hint,
+    body.mode-fishing #mobile-hint { display: none !important; }
+    body.mode-marker #explore-hint,
+    body.mode-marker #mobile-hint { display: none !important; }
+    body.mode-fishing #mobile-controls,
+    body.mode-marker #mobile-controls { display: none !important; }
+    body:has(#overlay.visible) #hud,
+    body:has(#overlay.visible) #mobile-controls,
+    body:has(#overlay.visible) #explore-hint,
+    body:has(#overlay.visible) #mobile-hint,
+    body:has(#marker-panel.visible) #hud,
+    body:has(#marker-panel.visible) #mobile-controls,
+    body:has(#marker-panel.visible) #explore-hint,
+    body:has(#marker-panel.visible) #mobile-hint {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #crosshair {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 0; height: 0;
+      pointer-events: none; z-index: 35;
+    }
+    #crosshair .ch-h,
+    #crosshair .ch-v {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.65), 0 0 2px rgba(0, 0, 0, 0.35);
+    }
+    #crosshair .ch-h {
+      width: 10px; height: 1.5px;
+      left: -5px; top: -0.75px;
+    }
+    #crosshair .ch-v {
+      width: 1.5px; height: 10px;
+      left: -0.75px; top: -5px;
+    }
+    body.mode-fishing #crosshair,
+    body.mode-marker #crosshair { display: none; }
+
+    #marker-toast {
+      position: absolute; top: 88px; left: 50%; transform: translateX(-50%);
+      padding: 8px 16px; border-radius: 10px; font-size: 13px;
+      background: rgba(20, 60, 80, 0.92); border: 1px solid rgba(126, 232, 250, 0.35);
+      pointer-events: none; opacity: 0; transition: opacity 0.25s; z-index: 50;
+    }
+    #marker-toast.visible { opacity: 1; }
+
+    #mobile-controls {
+      position: absolute; left: 18px; bottom: 22px; z-index: 42;
+      pointer-events: none; display: none;
+    }
+    #mobile-controls.visible { display: block; }
+    #mobile-controls.disabled { opacity: 0.25; pointer-events: none; }
+    #joystick-base {
+      width: 104px; height: 104px; border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(126, 232, 250, 0.12) 0 28%, transparent 29%),
+        rgba(8, 26, 40, 0.52);
+      border: 1px solid rgba(126, 232, 250, 0.32);
+      position: relative; pointer-events: auto; touch-action: none;
+      backdrop-filter: blur(10px);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+    #joystick-stick {
+      position: absolute; left: 50%; top: 50%;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(145deg, rgba(126, 232, 250, 0.92), rgba(74, 156, 247, 0.78));
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 7px 18px rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+
+    body.mode-explore .fishing-only { display: none !important; }
+    body.mode-fishing .hud-main.fishing-only,
+    body.mode-fishing .hud-bottom.fishing-only { display: flex; }
+    body.mode-fishing .hud-main.fishing-only {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+    .help-panel {
+      width: 168px; flex-shrink: 0; pointer-events: auto;
+      background: rgba(10, 28, 42, 0.82);
+      border: 1px solid rgba(126, 232, 250, 0.2);
+      border-radius: 12px; padding: 8px;
+      overflow-y: auto; max-height: 42%;
+      display: none;
+    }
+    .help-step {
+      padding: 6px 8px; margin-bottom: 4px; border-radius: 8px;
+      font-size: 11px; line-height: 1.35; opacity: 0.65;
+    }
+    .help-step strong { display: block; font-size: 12px; margin-bottom: 2px; }
+    .help-step.active {
+      background: rgba(46, 160, 120, 0.22);
+      border: 1px solid rgba(93, 223, 138, 0.45);
+      opacity: 1;
+    }
+    .help-step.done { opacity: 0.4; }
+    .fishing-col {
+      flex: 1; display: flex; flex-direction: column; min-width: 0;
+      pointer-events: auto;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(6, 22, 34, 0.68);
+      border: 1px solid rgba(126, 232, 250, 0.18);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+    #phase-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #7ee8fa; margin-bottom: 4px;
+    }
+    #fishing-message {
+      font-size: 14px; margin-bottom: 8px; min-height: 20px;
+    }
+    #water-panel {
+      position: relative; height: 118px; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(180deg, #1a5a72 0%, #0d3a4a 55%, #082430 100%);
+      border: 1px solid rgba(126, 232, 250, 0.2);
+      margin-bottom: 8px; cursor: pointer;
+    }
+    #water-panel.alert {
+      animation: waterPulse 0.5s ease-in-out infinite alternate;
+      border-color: #ffcc44;
+    }
+    @keyframes waterPulse {
+      from { box-shadow: inset 0 0 20px rgba(255, 200, 60, 0.1); }
+      to { box-shadow: inset 0 0 40px rgba(255, 200, 60, 0.35); }
+    }
+    #water-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent, transparent 18px,
+        rgba(255,255,255,0.03) 18px, rgba(255,255,255,0.03) 20px
+      );
+      pointer-events: none;
+    }
+    #bobber {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      width: 14px; height: 14px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff6b6b, #cc2222);
+      border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      transition: top 0.08s linear;
+    }
+    #bobber.bite { background: radial-gradient(circle at 35% 35%, #ffdd44, #ff8800); }
+    #bobber.hidden { opacity: 0; }
+    #bobber::after {
+      content: ''; position: absolute; top: -28px; left: 50%;
+      width: 1px; height: 28px; background: rgba(220,220,220,0.6);
+      transform: translateX(-50%);
+    }
+    #splash-layer {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .splash-dot, .result-particle {
+      position: absolute; border-radius: 50%; background: #e8f4f8;
+      transform: translate(-50%, -50%);
+    }
+    #cast-power-wrap {
+      height: 8px; background: rgba(255,255,255,0.1);
+      border-radius: 4px; overflow: hidden; margin-bottom: 8px;
+    }
+    #cast-power-wrap.hidden { display: none; }
+    #cast-power-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #4a9cf7, #7ee8fa);
+      border-radius: 4px; transition: width 0.05s linear;
+    }
+    #fight-panel.hidden, #catch-bar-wrap.hidden { display: none; }
+    #tension-track {
+      position: relative; height: 28px; background: rgba(0,0,0,0.35);
+      border-radius: 8px; margin-bottom: 6px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    #tension-zone {
+      position: absolute; top: 2px; bottom: 2px;
+      background: rgba(46, 180, 100, 0.45);
+      border: 1px solid rgba(93, 223, 138, 0.7);
+      border-radius: 4px; transition: left 0.05s, width 0.05s;
+    }
+    #tension-pointer {
+      position: absolute; top: 0; bottom: 0; width: 4px;
+      background: #fff; border-radius: 2px;
+      transform: translateX(-50%); box-shadow: 0 0 8px rgba(255,255,255,0.8);
+      transition: left 0.03s linear;
+    }
+    #tension-pointer.danger { background: #ff6b6b; box-shadow: 0 0 8px #ff6b6b; }
+    #catch-bar-wrap {
+      height: 10px; background: rgba(255,255,255,0.08);
+      border-radius: 5px; overflow: hidden; margin-bottom: 8px;
+    }
+    #catch-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #2eb464, #5ddf8a);
+      border-radius: 5px; transition: width 0.08s;
+    }
+    .action-row { display: flex; gap: 8px; width: 100%; }
+    .action-btn {
+      flex: 1; pointer-events: auto; cursor: pointer;
+      background: rgba(20, 50, 70, 0.9);
+      border: 1px solid rgba(126, 232, 250, 0.25);
+      border-radius: 12px; padding: 12px 8px;
+      min-height: 48px; min-width: 48px;
+      color: #e8f4f8; font-size: 14px; font-weight: 600;
+      transition: background 0.15s, transform 0.1s;
+      touch-action: manipulation;
+    }
+    .action-btn.exit {
+      flex: 0 0 auto;
+      background: rgba(60, 30, 30, 0.9);
+      border-color: rgba(255, 120, 120, 0.4);
+      padding: 12px 14px;
+    }
+    .action-btn:active { transform: scale(0.97); }
+    .action-btn.primary {
+      background: linear-gradient(135deg, rgba(46, 120, 200, 0.85), rgba(30, 90, 160, 0.9));
+      border-color: rgba(126, 232, 250, 0.5);
+    }
+    .action-btn.hook {
+      background: linear-gradient(135deg, rgba(220, 160, 40, 0.9), rgba(200, 100, 20, 0.9));
+      border-color: #ffcc44;
+    }
+    .action-btn.reel {
+      background: linear-gradient(135deg, rgba(40, 160, 100, 0.9), rgba(20, 120, 70, 0.9));
+      border-color: #5ddf8a;
+    }
+    .action-btn.pulse { animation: btnPulse 0.4s ease-in-out infinite alternate; }
+    @keyframes btnPulse {
+      from { box-shadow: 0 0 8px rgba(255, 200, 60, 0.3); }
+      to { box-shadow: 0 0 20px rgba(255, 200, 60, 0.8); }
+    }
+    .action-btn.hidden { display: none; }
+    #overlay {
+      position: absolute; inset: 0; display: none;
+      background: rgba(4, 12, 20, 0.85);
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+      pointer-events: auto; z-index: 100;
+    }
+    #overlay.visible { display: flex; }
+    #overlay h2 { font-size: 26px; }
+    #overlay p { opacity: 0.85; font-size: 15px; max-width: 300px; text-align: center; line-height: 1.5; }
+    #overlay button {
+      margin-top: 8px; padding: 12px 32px; font-size: 16px;
+      background: linear-gradient(135deg, #2a7ad4, #4a9cf7);
+      color: #fff; border: none; border-radius: 12px; cursor: pointer;
+    }
+    #loading {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+      background: #061018; z-index: 200; font-size: 16px;
+    }
+    #loading.hidden { display: none; }
+    #loading-detail { font-size: 12px; opacity: 0.6; }
+
+    #marker-panel {
+      position: absolute; inset: 0; display: none;
+      background: rgba(4, 12, 20, 0.88);
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 14px;
+      pointer-events: auto; z-index: 90;
+      padding: 24px 20px;
+    }
+    #marker-panel.visible { display: flex; }
+    #marker-panel-title { font-size: 22px; color: #7ee8fa; }
+    #marker-panel-msg {
+      font-size: 15px; line-height: 1.6; opacity: 0.9;
+      max-width: 320px; text-align: center;
+    }
+    #marker-panel-dismiss {
+      margin-top: 8px; padding: 12px 28px; font-size: 15px;
+      background: linear-gradient(135deg, #2a7ad4, #4a9cf7);
+      color: #fff; border: none; border-radius: 12px; cursor: pointer;
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body>
+  <div id="phone-shell">
+    <div id="phone-notch" aria-hidden="true"></div>
+    <div id="phone-screen">
+  <div id="loading">
+    <div>加载海岸场景…</div>
+    <div id="loading-detail">正在读取 Gaussian splat</div>
+  </div>
+  <canvas id="game-canvas"></canvas>
+  <div id="crosshair" aria-hidden="true">
+    <span class="ch-h"></span>
+    <span class="ch-v"></span>
+  </div>
+  <div id="explore-hint">WASD 移动 · 鼠标拖动环视</div>
+  <div id="mobile-hint" class="hidden">左下摇杆 · 右半屏环视</div>
+  <div id="marker-toast"></div>
+  <div id="mobile-controls">
+    <div id="joystick-base"><div id="joystick-stick"></div></div>
+  </div>
+  <div id="hud">
+    <div class="hud-top">
+      <div class="hud-status">
+        <span class="badge" id="title-badge">水族馆钓鱼</span>
+        <span class="badge" id="catch-count">0 条</span>
+      </div>
+      <div class="hud-actions">
+        <button class="badge action-btn" id="btn-reset" type="button" aria-label="重开" title="重开">↺</button>
+        <div id="dof-controls">
+          <button class="badge action-btn" id="btn-dof" type="button" aria-label="景深" aria-pressed="false" title="景深">景深</button>
+        </div>
+      </div>
+    </div>
+    <div class="hud-main fishing-only">
+      <aside class="help-panel">
+        <div id="help-steps"></div>
+      </aside>
+      <div class="fishing-col fishing-only">
+        <div id="phase-label">抛竿</div>
+        <div id="fishing-message">按住「抛竿」蓄力，松手抛出浮漂</div>
+        <div id="water-panel">
+          <div id="splash-layer"></div>
+          <div id="bobber"></div>
+        </div>
+        <div id="cast-power-wrap" class="hidden">
+          <div id="cast-power-bar"></div>
+        </div>
+        <div id="fight-panel" class="hidden">
+          <div id="tension-track">
+            <div id="tension-zone"></div>
+            <div id="tension-pointer"></div>
+          </div>
+        </div>
+        <div id="catch-bar-wrap" class="hidden">
+          <div id="catch-bar"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hud-bottom fishing-only">
+      <div class="action-row">
+        <button class="action-btn exit hidden" id="btn-exit" type="button">离开</button>
+        <button class="action-btn primary" id="btn-cast" type="button">🎣 抛竿</button>
+        <button class="action-btn hook hidden" id="btn-hook" type="button">⚡ 提竿！</button>
+        <button class="action-btn reel hidden" id="btn-reel" type="button">🔄 收线</button>
+        <button class="action-btn hidden" id="btn-again" type="button">再钓一次</button>
+      </div>
+    </div>
+  </div>
+  <div id="overlay">
+    <h2 id="overlay-title">欢迎</h2>
+    <p id="overlay-msg">在海岸场景中走动，找到绿色倒三角路标进入钓鱼。</p>
+    <button id="overlay-restart" type="button">开始探索</button>
+  </div>
+  <div id="marker-panel">
+    <h2 id="marker-panel-title">路标</h2>
+    <p id="marker-panel-msg"></p>
+    <button id="marker-panel-dismiss" type="button">返回探索</button>
+  </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+      "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
+    }
+  }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
