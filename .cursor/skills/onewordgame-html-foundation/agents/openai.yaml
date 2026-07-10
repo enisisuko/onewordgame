@@ -1,0 +1,4 @@
+interface:
+  display_name: "OneWordGame HTML 基座"
+  short_description: "一键还原并改造景深、第一人称物品与通用网页游戏基座"
+  default_prompt: "使用 $onewordgame-html-foundation，把我的一句话需求还原或制作成可玩的 HTML 高斯游戏。"

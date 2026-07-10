@@ -1,0 +1,10 @@
+{
+  "rawRequest": "做一个找角度的猜物体游戏",
+  "correctAnswer": "咖啡杯",
+  "difficulty": "normal",
+  "sessionLengthSeconds": 60,
+  "enableRotationBudget": false,
+  "maxWrongGuesses": 3,
+  "clarityWinThreshold": 0.85,
+  "targetPlatform": "mobile_web"
+}

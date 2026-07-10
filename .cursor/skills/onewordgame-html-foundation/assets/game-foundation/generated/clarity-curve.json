@@ -1,0 +1,1263 @@
+{
+  "version": "1.0",
+  "difficulty": "normal",
+  "sigmaRadians": 0.275,
+  "peak": {
+    "yawDegrees": 0.0,
+    "pitchDegrees": 15.0,
+    "clarity": 0.9401
+  },
+  "samples": [
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -180.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -165.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -150.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -135.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -120.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -105.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -90.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -75.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -60.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -45.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.0505
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.1386
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.167
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.0883
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -30.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.192
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.5329
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.6101
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.288
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.0561
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": -15.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.2996
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.835
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.9401
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.4276
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.0786
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 0.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.192
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.5329
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.6101
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.288
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.0561
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 15.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.0505
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.1386
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.167
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.0883
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 30.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 45.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 60.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 75.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 90.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 105.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 120.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 135.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 150.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 165.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": -60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": -45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": -30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": -15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 0.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 15.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 30.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 45.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 60.0,
+      "clarity": 0.05
+    },
+    {
+      "yawDegrees": 180.0,
+      "pitchDegrees": 75.0,
+      "clarity": 0.05
+    }
+  ],
+  "canonicalSource": "api_metadata"
+}
